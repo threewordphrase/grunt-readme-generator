@@ -96,6 +96,7 @@ module.exports = (grunt) ->
       grunt.fail.error "Source file \"" + f + "\" not found."
     else
       append_to_file output, grunt.file.read f 
+      append_to_file output, "\n"
 
   generate_release_history = (prefix, changelog_folder, output) ->
 

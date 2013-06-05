@@ -100,7 +100,8 @@ module.exports = function(grunt) {
     if (!grunt.file.exists(f)) {
       return grunt.fail.error("Source file \"" + f + "\" not found.");
     } else {
-      return append_to_file(output, grunt.file.read(f));
+      append_to_file(output, grunt.file.read(f));
+      return append_to_file(output, "\n");
     }
   };
   generate_release_history = function(prefix, changelog_folder, output) {
