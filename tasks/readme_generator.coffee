@@ -13,7 +13,7 @@ module.exports = (grunt) ->
   
   # helper functions
   make_anchor = (string) ->
-    # todo: make convert a string like "Special Thanks" to "special-thanks"
+    #  make convert a string like "Special Thanks" to "special-thanks"
     str = string.replace(/\s+/g, '-').toLowerCase()
     str = "#"+str
 
@@ -23,25 +23,43 @@ module.exports = (grunt) ->
     result = "[Back To Top](#{str})"
 
   get_latest_changelog = (prefix, changelog_folder)->
-    # todo: get the latest changelog file and print it to the readme
+    #  get the latest changelog file and print it to the readme
+    # todo: what if the extension is .markdown or something else...
+    # currently only .md extensions are supported
+    versions_found = []
+    grunt.file.recurse changelog_folder, (abspath, rootdir, subdir, filename) ->
+      if filename.substring(0,prefix.length) is prefix
+        # -3 is for .md part
+        version = filename.slice(prefix.length,-3)
+        versions_found.push version
+    if versions_found.length > 0
+      versions_found.sort()
+      latest = versions_found[versions_found.length -1]
+      latest
+    else
+      grunt.fail.error "No changelogs are present. Please write a changelog file or fix prefixes."
+      false
+
 
   generate_banner = (path, banner_file, output) ->
     f = path+"/"+banner_file
     unless grunt.file.exists f
-      grunt.log.error "Source file \"" + f + "\" not found."
+      grunt.fail.error "Source file \"" + f + "\" not found."
     else
       grunt.file.write output, grunt.file.read f
 
 
-  generate_TOC = (files, toc_extra_links, output) ->
+  generate_TOC = (files, toc_extra_links, output, changelog_insert_before) ->
     grunt.file.write output, "## Jump to Section\n\n"
     for file, title of files
+      if file is changelog_insert_before
+        # release history is generated specially since the latest-changelog is generated dynamically.
+        release_title = make_anchor "Release History"
+        grunt.file.write output, "* [#Release History](#{release_title})\n"
       link = make_anchor title
       grunt.file.write output, "* [#{title}](#{link})\n"
-    # release history is generated specially since the latest-changelog is generated dynamically.
-    title = "Release History"
-    link = make_anchor title
-    grunt.file.write output, "* [#{title}](#{link})\n"
+
+    
     if toc_extra_links.length > 0
       for i in toc_extra_links
         ex = toc_extra_links[i]
@@ -63,15 +81,24 @@ module.exports = (grunt) ->
     grunt.file.write output, "#{top}\n\n"
     f = path+"/"+file
     unless grunt.file.exists f
-      grunt.log.error "Source file \"" + f + "\" not found."
+      grunt.fail.error "Source file \"" + f + "\" not found."
     else
       grunt.file.write output, grunt.file.read f 
 
-  generate_release_history = (prefix, changelog_folder) ->
+  generate_release_history = (prefix, changelog_folder, output) ->
+
     grunt.file.write output, "## Release History\n"
     top = back_to_top()
     grunt.file.write output, "#{top}\n\n"
-    get_latest_changelog prefix, changelog_folder
+    grunt.file.write output, "You can find [all the changelogs here](./#{changelog_folder}).\n"
+    latest = get_latest_changelog prefix, changelog_folder
+    # todo: only supporting .md format at the moment.
+    latest_file = prefix + latest + ".md"
+    grunt.file.write output, "### Latest changelog is for [#{latest}](#{changelog_folder}/latest_file):"
+    unless grunt.file.exists latest_file
+      grunt.fail.error "Changelog file \"" + latest_file + "\" not found."
+    else
+      grunt.file.write output, grunt.file.read latest_file 
 
 
   generate_footer = (output) ->
@@ -98,33 +125,14 @@ module.exports = (grunt) ->
     
     # generate banner
     if options.banner?
-
       generate_banner options.readme_folder, options.banner
 
 
     # Iterate over all specified file groups.
     @files.forEach (f) ->
+      console.log "src", f.src
+      console.log "dest", f.dest
       
-      # Concat specified files.
-      
-      # error on and remove invalid source files (if nonull was set).
-      
-      # Read file source.
-      src = f.src.filter((filepath) ->
-        unless grunt.file.exists(filepath)
-          grunt.log.error "Source file \"" + filepath + "\" not found."
-          false
-        else
-          true
-      ).map((filepath) ->
-        grunt.file.read filepath
-      ).join(grunt.util.normalizelf(options.separator))
-      
-      # Handle options.
-      src += options.punctuation
-      
-      # Write the destination file.
-      grunt.file.write f.dest, src
       
       # Print a success message.
       grunt.log.writeln "File \"" + f.dest + "\" created."

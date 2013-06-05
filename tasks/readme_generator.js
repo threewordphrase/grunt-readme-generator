@@ -16,29 +16,50 @@
     str += "-";
     return result = "[Back To Top](" + str + ")";
   };
-  get_latest_changelog = function(prefix, changelog_folder) {};
+  get_latest_changelog = function(prefix, changelog_folder) {
+    var latest, versions_found;
+
+    versions_found = [];
+    grunt.file.recurse(changelog_folder, function(abspath, rootdir, subdir, filename) {
+      var version;
+
+      if (filename.substring(0, prefix.length) === prefix) {
+        version = filename.slice(prefix.length, -3);
+        return versions_found.push(version);
+      }
+    });
+    if (versions_found.length > 0) {
+      versions_found.sort();
+      latest = versions_found[versions_found.length(-1)];
+      return latest;
+    } else {
+      grunt.fail.error("No changelogs are present. Please write a changelog file or fix prefixes.");
+      return false;
+    }
+  };
   generate_banner = function(path, banner_file, output) {
     var f;
 
     f = path + "/" + banner_file;
     if (!grunt.file.exists(f)) {
-      return grunt.log.error("Source file \"" + f + "\" not found.");
+      return grunt.fail.error("Source file \"" + f + "\" not found.");
     } else {
       return grunt.file.write(output, grunt.file.read(f));
     }
   };
-  generate_TOC = function(files, toc_extra_links, output) {
-    var ex, file, i, link, title, _i, _len, _results;
+  generate_TOC = function(files, toc_extra_links, output, changelog_insert_before) {
+    var ex, file, i, link, release_title, title, _i, _len, _results;
 
     grunt.file.write(output, "## Jump to Section\n\n");
     for (file in files) {
       title = files[file];
+      if (file === changelog_insert_before) {
+        release_title = make_anchor("Release History");
+        grunt.file.write(output, "* [#Release History](" + release_title + ")\n");
+      }
       link = make_anchor(title);
       grunt.file.write(output, "* [" + title + "](" + link + ")\n");
     }
-    title = "Release History";
-    link = make_anchor(title);
-    grunt.file.write(output, "* [" + title + "](" + link + ")\n");
     if (toc_extra_links.length > 0) {
       _results = [];
       for (_i = 0, _len = toc_extra_links.length; _i < _len; _i++) {
@@ -69,18 +90,26 @@
     grunt.file.write(output, "" + top + "\n\n");
     f = path + "/" + file;
     if (!grunt.file.exists(f)) {
-      return grunt.log.error("Source file \"" + f + "\" not found.");
+      return grunt.fail.error("Source file \"" + f + "\" not found.");
     } else {
       return grunt.file.write(output, grunt.file.read(f));
     }
   };
-  generate_release_history = function(prefix, changelog_folder) {
-    var top;
+  generate_release_history = function(prefix, changelog_folder, output) {
+    var latest, latest_file, top;
 
     grunt.file.write(output, "## Release History\n");
     top = back_to_top();
     grunt.file.write(output, "" + top + "\n\n");
-    return get_latest_changelog(prefix, changelog_folder);
+    grunt.file.write(output, "You can find [all the changelogs here](./" + changelog_folder + ").\n");
+    latest = get_latest_changelog(prefix, changelog_folder);
+    latest_file = prefix + latest + ".md";
+    grunt.file.write(output, "### Latest changelog is for [" + latest + "](" + changelog_folder + "/latest_file):");
+    if (!grunt.file.exists(latest_file)) {
+      return grunt.fail.error("Changelog file \"" + latest_file + "\" not found.");
+    } else {
+      return grunt.file.write(output, grunt.file.read(latest_file));
+    }
   };
   generate_footer = function(output) {
     var date, str;
@@ -108,20 +137,8 @@
       generate_banner(options.readme_folder, options.banner);
     }
     return this.files.forEach(function(f) {
-      var src;
-
-      src = f.src.filter(function(filepath) {
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.error("Source file \"" + filepath + "\" not found.");
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
-      src += options.punctuation;
-      grunt.file.write(f.dest, src);
+      console.log("src", f.src);
+      console.log("dest", f.dest);
       return grunt.log.writeln("File \"" + f.dest + "\" created.");
     });
   });
