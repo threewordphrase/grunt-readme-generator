@@ -112,11 +112,11 @@ module.exports = (grunt) ->
     append_to_file output, "## Release History\n"
     top = back_to_top(travis)
     append_to_file output, "#{top}\n\n"
-    append_to_file output, "You can find [all the changelogs here](./#{changelog_folder}).\n\n"
+    append_to_file output, "You can find [all the changelogs here](/#{changelog_folder}).\n\n"
     latest = get_latest_changelog prefix, changelog_folder
     # todo: only supporting .md format at the moment.
     latest_file = changelog_folder + "/" + prefix + latest + ".md"
-    append_to_file output, "### Latest changelog is for [#{latest}](#{changelog_folder}/#{latest_file}):\n\n"
+    append_to_file output, "### Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
     unless grunt.file.exists latest_file
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
