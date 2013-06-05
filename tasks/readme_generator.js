@@ -17,11 +17,13 @@ module.exports = function(grunt) {
     str = string.replace(/\s+/g, '-').toLowerCase();
     return str = "#" + str;
   };
-  back_to_top = function() {
+  back_to_top = function(travis) {
     var result, str;
 
     str = make_anchor(pkg.name);
-    str += "-";
+    if (travis) {
+      str += "-";
+    }
     return result = "[Back To Top](" + str + ")";
   };
   get_latest_changelog = function(prefix, changelog_folder) {
@@ -64,7 +66,7 @@ module.exports = function(grunt) {
       title = files[file];
       if (file === changelog_insert_before) {
         release_title = make_anchor("Release History");
-        append_to_file(output, "* [Release History](#" + release_title + ")\n");
+        append_to_file(output, "* [Release History](" + release_title + ")\n");
         link = make_anchor(title);
         append_to_file(output, "* [" + title + "](" + link + ")\n");
       } else {
@@ -93,11 +95,11 @@ module.exports = function(grunt) {
     }
     return append_to_file(output, "\n\n> " + desc + "\n\n");
   };
-  append = function(path, file, title, output) {
+  append = function(path, file, title, travis, output) {
     var f, top;
 
     append_to_file(output, "## " + title + "\n");
-    top = back_to_top();
+    top = back_to_top(travis);
     append_to_file(output, "" + top + "\n\n");
     f = path + "/" + file;
     if (!grunt.file.exists(f)) {
@@ -107,11 +109,11 @@ module.exports = function(grunt) {
       return append_to_file(output, "\n\n");
     }
   };
-  generate_release_history = function(prefix, changelog_folder, output) {
+  generate_release_history = function(prefix, changelog_folder, travis, output) {
     var latest, latest_file, top;
 
     append_to_file(output, "## Release History\n");
-    top = back_to_top();
+    top = back_to_top(travis);
     append_to_file(output, "" + top + "\n\n");
     append_to_file(output, "You can find [all the changelogs here](./" + changelog_folder + ").\n\n");
     latest = get_latest_changelog(prefix, changelog_folder);
@@ -156,9 +158,9 @@ module.exports = function(grunt) {
     for (file in files) {
       title = files[file];
       if (file === options.changelog_insert_before) {
-        generate_release_history(options.changelog_version_prefix, options.changelog_folder, options.output);
+        generate_release_history(options.changelog_version_prefix, options.changelog_folder, options.has_travis, options.output);
       }
-      append(options.readme_folder, file, title, options.output);
+      append(options.readme_folder, file, title, options.has_travis, options.output);
     }
     generate_footer(options.output);
     return grunt.log.writeln("File \"" + options.output + "\" created.");

@@ -14,7 +14,6 @@ module.exports = (grunt) ->
   # creation: http://gruntjs.com/creating-tasks
   
   # helper functions
-
   append_to_file = (output, content) ->
     fs.appendFileSync output, content
 
@@ -24,9 +23,9 @@ module.exports = (grunt) ->
     str = string.replace(/\s+/g, '-').toLowerCase()
     str = "#"+str
 
-  back_to_top = () ->
+  back_to_top = (travis) ->
     str = make_anchor pkg.name
-    str += "-"
+    if travis then str += "-"
     result = "[Back To Top](#{str})"
 
   get_latest_changelog = (prefix, changelog_folder)->
@@ -73,7 +72,7 @@ module.exports = (grunt) ->
         # release history is generated specially since the latest-changelog is generated dynamically.
         # console.log "inserting release history"
         release_title = make_anchor "Release History"
-        append_to_file output, "* [Release History](##{release_title})\n"
+        append_to_file output, "* [Release History](#{release_title})\n"
         # console.log "inserting #{title}"
         link = make_anchor title
         append_to_file output, "* [#{title}](#{link})\n"
@@ -97,9 +96,9 @@ module.exports = (grunt) ->
       append_to_file output, "#{tra}"
     append_to_file output, "\n\n> #{desc}\n\n"
 
-  append = (path, file, title, output) ->
+  append = (path, file, title, travis, output) ->
     append_to_file output, "## #{title}\n"
-    top = back_to_top()
+    top = back_to_top(travis)
     append_to_file output, "#{top}\n\n"
     f = path+"/"+file
     unless grunt.file.exists f
@@ -108,10 +107,10 @@ module.exports = (grunt) ->
       append_to_file output, grunt.file.read f 
       append_to_file output, "\n\n"
 
-  generate_release_history = (prefix, changelog_folder, output) ->
+  generate_release_history = (prefix, changelog_folder, travis, output) ->
 
     append_to_file output, "## Release History\n"
-    top = back_to_top()
+    top = back_to_top(travis)
     append_to_file output, "#{top}\n\n"
     append_to_file output, "You can find [all the changelogs here](./#{changelog_folder}).\n\n"
     latest = get_latest_changelog prefix, changelog_folder
@@ -164,8 +163,8 @@ module.exports = (grunt) ->
       # console.log "title: ", title
       if file is options.changelog_insert_before
         # add release history
-        generate_release_history options.changelog_version_prefix, options.changelog_folder, options.output
-      append options.readme_folder, file, title, options.output
+        generate_release_history options.changelog_version_prefix, options.changelog_folder, options.has_travis, options.output
+      append options.readme_folder, file, title, options.has_travis, options.output
 
     # after writing all the contents 
     

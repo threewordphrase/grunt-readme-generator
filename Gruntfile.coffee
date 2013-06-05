@@ -26,6 +26,7 @@ module.exports = (grunt) ->
     readme_generator:
       default_options:
         options:
+          has_travis: off
           output: "test/readme.md"
           table_of_contents: on
           readme_folder: "test/readme"

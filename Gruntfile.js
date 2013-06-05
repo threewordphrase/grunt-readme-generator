@@ -14,6 +14,7 @@
     readme_generator: {
       default_options: {
         options: {
+          has_travis: false,
           output: "test/readme.md",
           table_of_contents: true,
           readme_folder: "test/readme",
