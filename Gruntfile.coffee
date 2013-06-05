@@ -19,7 +19,7 @@ module.exports = (grunt) ->
     
     # Before generating any new files, remove any previously-created files.
     clean:
-      tests: ["tmp"]
+      tests: ["test/readme.md"]
 
     
     # Configuration to be run (and then tested).
@@ -47,12 +47,6 @@ module.exports = (grunt) ->
           "building-and-testing.md":"Building and Testing"
           "legal.md" : "Legal Mambo Jambo"
 
-      
-
-    
-    # Unit tests.
-    nodeunit:
-      tests: ["test/*_test.js"]
 
   
   # Actually load this plugin's task(s).

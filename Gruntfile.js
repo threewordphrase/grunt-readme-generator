@@ -9,7 +9,7 @@
       }
     },
     clean: {
-      tests: ["tmp"]
+      tests: ["test/readme.md"]
     },
     readme_generator: {
       default_options: {
@@ -33,9 +33,6 @@
           "legal.md": "Legal Mambo Jambo"
         }
       }
-    },
-    nodeunit: {
-      tests: ["test/*_test.js"]
     }
   });
   grunt.loadTasks("tasks");
