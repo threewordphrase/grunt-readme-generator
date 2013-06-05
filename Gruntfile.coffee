@@ -11,11 +11,6 @@ module.exports = (grunt) ->
   # Project configuration.
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
-    jshint:
-      all: ["Gruntfile.js", "tasks/*.js", "<%= nodeunit.tests %>"]
-      options:
-        jshintrc: ".jshintrc"
-
     
     # Before generating any new files, remove any previously-created files.
     clean:
@@ -24,11 +19,11 @@ module.exports = (grunt) ->
     
     # Configuration to be run (and then tested).
     readme_generator:
-      default_options:
+      test:
         options:
           has_travis: off
           output: "test/readme.md"
-          table_of_contents: on
+          table_of_contents: off
           readme_folder: "test/readme"
           changelog_folder: "test/changelogs"
           changelog_version_prefix: "v"
@@ -53,13 +48,11 @@ module.exports = (grunt) ->
   grunt.loadTasks "tasks"
   
   # These plugins provide necessary tasks.
-  grunt.loadNpmTasks "grunt-contrib-jshint"
   grunt.loadNpmTasks "grunt-contrib-clean"
-  grunt.loadNpmTasks "grunt-contrib-nodeunit"
   
   # Whenever the "test" task is run, first clean the "tmp" dir, then run this
   # plugin's task(s), then test the result.
-  grunt.registerTask "test", ["clean", "readme_generator"]
+  grunt.registerTask "test", ["clean", "readme_generator:test"]
   
   # By default, lint and run all tests.
-  grunt.registerTask "default", ["jshint", "test"]
+  grunt.registerTask "default", ["build", "test"]

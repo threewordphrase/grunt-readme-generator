@@ -2,21 +2,15 @@
 "use strict";module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
-    jshint: {
-      all: ["Gruntfile.js", "tasks/*.js", "<%= nodeunit.tests %>"],
-      options: {
-        jshintrc: ".jshintrc"
-      }
-    },
     clean: {
       tests: ["test/readme.md"]
     },
     readme_generator: {
-      default_options: {
+      test: {
         options: {
           has_travis: false,
           output: "test/readme.md",
-          table_of_contents: true,
+          table_of_contents: false,
           readme_folder: "test/readme",
           changelog_folder: "test/changelogs",
           changelog_version_prefix: "v",
@@ -36,9 +30,7 @@
     }
   });
   grunt.loadTasks("tasks");
-  grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-clean");
-  grunt.loadNpmTasks("grunt-contrib-nodeunit");
-  grunt.registerTask("test", ["clean", "readme_generator"]);
-  return grunt.registerTask("default", ["jshint", "test"]);
+  grunt.registerTask("test", ["clean", "readme_generator:test"]);
+  return grunt.registerTask("default", ["build", "test"]);
 };

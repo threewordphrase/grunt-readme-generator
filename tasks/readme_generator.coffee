@@ -8,14 +8,16 @@
 "use strict"
 fs = require 'fs'
 module.exports = (grunt) ->
+
   pkg = grunt.config.get ['pkg']
-  
+  # console.log pkg
+  unless pkg?
+    grunt.fail.fatal "The package configuration is missing. Please add `pkg: grunt.file.readJSON('package.json')` to your grunt init in Gruntfile; or provide a `pkg` object in `grunt.config` with package name and description."
   # Please see the Grunt documentation for more information regarding task
   # creation: http://gruntjs.com/creating-tasks
   
   # helper functions
-  append_to_file = (output, content) ->
-    fs.appendFileSync output, content
+  
 
   make_anchor = (string) ->
     #  make convert a string like "Special Thanks" to "special-thanks"
@@ -24,14 +26,18 @@ module.exports = (grunt) ->
     str = "#"+str
 
   back_to_top = (travis) ->
+    # just creates the link
     str = make_anchor pkg.name
     if travis then str += "-"
     result = "[Back To Top](#{str})"
 
-  get_latest_changelog = (prefix, changelog_folder)->
+  get_latest_changelog = (opts)->
     #  get the latest changelog file and print it to the readme
     # todo: what if the extension is .markdown or something else...
     # currently only .md extensions are supported
+    prefix = opts.changelog_version_prefix
+    changelog_folder = opts.changelog_folder
+
     versions_found = []
     files = fs.readdirSync changelog_folder
     # console.log files
@@ -47,23 +53,32 @@ module.exports = (grunt) ->
     if versions_found.length > 0
       versions_found.sort()
       latest = versions_found[versions_found.length - 1]
+      # returns just 0.1.1 from v0.1.1.md
       latest
     else
       grunt.fail.fatal "No changelogs are present. Please write a changelog file or fix prefixes."
       false
 
 
-  generate_banner = (path, banner_file, output) ->
+  generate_banner = (opts) ->
+    path = opts.readme_folder
+    banner_file = opts.banner
+    output = opts.output
+
     f = path+"/"+banner_file
     unless grunt.file.exists f
       grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
-      append_to_file output, grunt.file.read f
-      append_to_file output, "\n"
+      fs.appendFileSync output, grunt.file.read f
+      fs.appendFileSync output, "\n"
 
 
-  generate_TOC = (files, toc_extra_links, changelog_insert_before, output) ->
-    append_to_file output, "## Jump to Section\n\n"
+  generate_TOC = (files, opts) ->
+    toc_extra_links = opts.toc_extra_links
+    changelog_insert_before = opts.changelog_insert_before
+    output = opts.output
+
+    fs.appendFileSync output, "## Jump to Section\n\n"
     # console.dir files
     
     for file, title of files
@@ -72,62 +87,74 @@ module.exports = (grunt) ->
         # release history is generated specially since the latest-changelog is generated dynamically.
         # console.log "inserting release history"
         release_title = make_anchor "Release History"
-        append_to_file output, "* [Release History](#{release_title})\n"
+        fs.appendFileSync output, "* [Release History](#{release_title})\n"
         # console.log "inserting #{title}"
         link = make_anchor title
-        append_to_file output, "* [#{title}](#{link})\n"
+        fs.appendFileSync output, "* [#{title}](#{link})\n"
       else
         link = make_anchor title
-        append_to_file output, "* [#{title}](#{link})\n"
+        fs.appendFileSync output, "* [#{title}](#{link})\n"
     
     if toc_extra_links.length > 0
       for i in toc_extra_links
         ex = i
-        append_to_file output, "* #{ex}\n"
-    append_to_file output, "\n"
+        fs.appendFileSync output, "* #{ex}\n"
+    fs.appendFileSync output, "\n"
       
-  generate_title = (output, travis, username) ->
+  generate_title = (opts) ->
+    output = opts.output
+    travis = opts.has_travis
+    username = opts.github_username
+
     title = pkg.name
     desc = pkg.description
-    append_to_file output, "# #{title} "
+    fs.appendFileSync output, "# #{title} "
 
     if travis
       tra = "[![Build Status](https://secure.travis-ci.org/#{username}/#{title}.png?branch=master)](http://travis-ci.org/#{username}/#{title})"
-      append_to_file output, "#{tra}"
-    append_to_file output, "\n\n> #{desc}\n\n"
+      fs.appendFileSync output, "#{tra}"
+    fs.appendFileSync output, "\n\n> #{desc}\n\n"
 
-  append = (path, file, title, travis, output) ->
-    append_to_file output, "## #{title}\n"
+  append = (opts, file, title) ->
+    path = opts.readme_folder
+    travis = opts.has_travis
+    output = opts.output
+
+    fs.appendFileSync output, "## #{title}\n"
     top = back_to_top(travis)
-    append_to_file output, "#{top}\n\n"
+    fs.appendFileSync output, "#{top}\n\n"
     f = path+"/"+file
     unless grunt.file.exists f
       grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
-      append_to_file output, grunt.file.read f 
-      append_to_file output, "\n\n"
+      fs.appendFileSync output, grunt.file.read f 
+      fs.appendFileSync output, "\n\n"
 
-  generate_release_history = (prefix, changelog_folder, travis, output) ->
-
-    append_to_file output, "## Release History\n"
+  generate_release_history = (opts) ->
+    prefix = opts.changelog_version_prefix
+    changelog_folder = opts.changelog_folder
+    travis = opts.has_travis
+    output = opts.output
+    fs.appendFileSync output, "## Release History\n"
     top = back_to_top(travis)
-    append_to_file output, "#{top}\n\n"
-    append_to_file output, "You can find [all the changelogs here](/#{changelog_folder}).\n\n"
-    latest = get_latest_changelog prefix, changelog_folder
+    fs.appendFileSync output, "#{top}\n\n"
+    fs.appendFileSync output, "You can find [all the changelogs here](/#{changelog_folder}).\n\n"
+    latest = get_latest_changelog opts
     # todo: only supporting .md format at the moment.
     latest_file = changelog_folder + "/" + prefix + latest + ".md"
-    append_to_file output, "### Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
+    fs.appendFileSync output, "### Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
     unless grunt.file.exists latest_file
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
-      append_to_file output, grunt.file.read latest_file 
-      append_to_file output, "\n"
+      fs.appendFileSync output, grunt.file.read latest_file 
+      fs.appendFileSync output, "\n"
 
 
-  generate_footer = (output) ->
+  generate_footer = (opts) ->
+    output = opts.output
     date = new Date();
     str = "\n--------\n_This readme has been automatically generated by [readme generator](https://github.com/aponxi/grunt-readme-generator) on #{date}._"
-    append_to_file output, str
+    fs.appendFileSync output, str
 
 
   grunt.registerMultiTask "readme_generator", "Generate Readme File", ->
@@ -152,10 +179,10 @@ module.exports = (grunt) ->
     files = @data.order
     # generate banner
     if options.banner?
-      generate_banner options.readme_folder, options.banner, options.output
+      generate_banner options
     # generate title and description
-    generate_title options.output, options.has_travis, options.github_username
-    generate_TOC files, options.toc_extra_links, options.changelog_insert_before, options.output
+    generate_title options
+    generate_TOC files, options
 
     # Iterate over all specified file groups.
     for file, title of files
@@ -163,13 +190,13 @@ module.exports = (grunt) ->
       # console.log "title: ", title
       if file is options.changelog_insert_before
         # add release history
-        generate_release_history options.changelog_version_prefix, options.changelog_folder, options.has_travis, options.output
-      append options.readme_folder, file, title, options.has_travis, options.output
+        generate_release_history options
+      append options, file, title
 
     # after writing all the contents 
     
     # add footer
-    generate_footer options.output
+    generate_footer options
     # Print a success message.
     grunt.log.writeln "File \"" + options.output + "\" created."
 

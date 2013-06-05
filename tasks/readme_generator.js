@@ -5,12 +5,12 @@ var fs;
 fs = require('fs');
 
 module.exports = function(grunt) {
-  var append, append_to_file, back_to_top, generate_TOC, generate_banner, generate_footer, generate_release_history, generate_title, get_latest_changelog, make_anchor, pkg;
+  var append, back_to_top, generate_TOC, generate_banner, generate_footer, generate_release_history, generate_title, get_latest_changelog, make_anchor, pkg;
 
   pkg = grunt.config.get(['pkg']);
-  append_to_file = function(output, content) {
-    return fs.appendFileSync(output, content);
-  };
+  if (pkg == null) {
+    grunt.fail.fatal("The package configuration is missing. Please add `pkg: grunt.file.readJSON('package.json')` to your grunt init in Gruntfile; or provide a `pkg` object in `grunt.config` with package name and description.");
+  }
   make_anchor = function(string) {
     var str;
 
@@ -26,9 +26,11 @@ module.exports = function(grunt) {
     }
     return result = "[Back To Top](" + str + ")";
   };
-  get_latest_changelog = function(prefix, changelog_folder) {
-    var filename, files, latest, version, versions_found, _i, _len;
+  get_latest_changelog = function(opts) {
+    var changelog_folder, filename, files, latest, prefix, version, versions_found, _i, _len;
 
+    prefix = opts.changelog_version_prefix;
+    changelog_folder = opts.changelog_folder;
     versions_found = [];
     files = fs.readdirSync(changelog_folder);
     for (_i = 0, _len = files.length; _i < _len; _i++) {
@@ -47,91 +49,108 @@ module.exports = function(grunt) {
       return false;
     }
   };
-  generate_banner = function(path, banner_file, output) {
-    var f;
+  generate_banner = function(opts) {
+    var banner_file, f, output, path;
 
+    path = opts.readme_folder;
+    banner_file = opts.banner;
+    output = opts.output;
     f = path + "/" + banner_file;
     if (!grunt.file.exists(f)) {
       return grunt.fail.fatal("Source file \"" + f + "\" not found.");
     } else {
-      append_to_file(output, grunt.file.read(f));
-      return append_to_file(output, "\n");
+      fs.appendFileSync(output, grunt.file.read(f));
+      return fs.appendFileSync(output, "\n");
     }
   };
-  generate_TOC = function(files, toc_extra_links, changelog_insert_before, output) {
-    var ex, file, i, link, release_title, title, _i, _len;
+  generate_TOC = function(files, opts) {
+    var changelog_insert_before, ex, file, i, link, output, release_title, title, toc_extra_links, _i, _len;
 
-    append_to_file(output, "## Jump to Section\n\n");
+    toc_extra_links = opts.toc_extra_links;
+    changelog_insert_before = opts.changelog_insert_before;
+    output = opts.output;
+    fs.appendFileSync(output, "## Jump to Section\n\n");
     for (file in files) {
       title = files[file];
       if (file === changelog_insert_before) {
         release_title = make_anchor("Release History");
-        append_to_file(output, "* [Release History](" + release_title + ")\n");
+        fs.appendFileSync(output, "* [Release History](" + release_title + ")\n");
         link = make_anchor(title);
-        append_to_file(output, "* [" + title + "](" + link + ")\n");
+        fs.appendFileSync(output, "* [" + title + "](" + link + ")\n");
       } else {
         link = make_anchor(title);
-        append_to_file(output, "* [" + title + "](" + link + ")\n");
+        fs.appendFileSync(output, "* [" + title + "](" + link + ")\n");
       }
     }
     if (toc_extra_links.length > 0) {
       for (_i = 0, _len = toc_extra_links.length; _i < _len; _i++) {
         i = toc_extra_links[_i];
         ex = i;
-        append_to_file(output, "* " + ex + "\n");
+        fs.appendFileSync(output, "* " + ex + "\n");
       }
     }
-    return append_to_file(output, "\n");
+    return fs.appendFileSync(output, "\n");
   };
-  generate_title = function(output, travis, username) {
-    var desc, title, tra;
+  generate_title = function(opts) {
+    var desc, output, title, tra, travis, username;
 
+    output = opts.output;
+    travis = opts.has_travis;
+    username = opts.github_username;
     title = pkg.name;
     desc = pkg.description;
-    append_to_file(output, "# " + title + " ");
+    fs.appendFileSync(output, "# " + title + " ");
     if (travis) {
       tra = "[![Build Status](https://secure.travis-ci.org/" + username + "/" + title + ".png?branch=master)](http://travis-ci.org/" + username + "/" + title + ")";
-      append_to_file(output, "" + tra);
+      fs.appendFileSync(output, "" + tra);
     }
-    return append_to_file(output, "\n\n> " + desc + "\n\n");
+    return fs.appendFileSync(output, "\n\n> " + desc + "\n\n");
   };
-  append = function(path, file, title, travis, output) {
-    var f, top;
+  append = function(opts, file, title) {
+    var f, output, path, top, travis;
 
-    append_to_file(output, "## " + title + "\n");
+    path = opts.readme_folder;
+    travis = opts.has_travis;
+    output = opts.output;
+    fs.appendFileSync(output, "## " + title + "\n");
     top = back_to_top(travis);
-    append_to_file(output, "" + top + "\n\n");
+    fs.appendFileSync(output, "" + top + "\n\n");
     f = path + "/" + file;
     if (!grunt.file.exists(f)) {
       return grunt.fail.fatal("Source file \"" + f + "\" not found.");
     } else {
-      append_to_file(output, grunt.file.read(f));
-      return append_to_file(output, "\n\n");
+      fs.appendFileSync(output, grunt.file.read(f));
+      return fs.appendFileSync(output, "\n\n");
     }
   };
-  generate_release_history = function(prefix, changelog_folder, travis, output) {
-    var latest, latest_file, top;
+  generate_release_history = function(opts) {
+    var changelog_folder, latest, latest_file, output, prefix, top, travis;
 
-    append_to_file(output, "## Release History\n");
+    prefix = opts.changelog_version_prefix;
+    changelog_folder = opts.changelog_folder;
+    travis = opts.has_travis;
+    output = opts.output;
+    fs.appendFileSync(output, "## Release History\n");
     top = back_to_top(travis);
-    append_to_file(output, "" + top + "\n\n");
-    append_to_file(output, "You can find [all the changelogs here](/" + changelog_folder + ").\n\n");
-    latest = get_latest_changelog(prefix, changelog_folder);
+    fs.appendFileSync(output, "" + top + "\n\n");
+    fs.appendFileSync(output, "You can find [all the changelogs here](/" + changelog_folder + ").\n\n");
+    latest = get_latest_changelog(opts);
     latest_file = changelog_folder + "/" + prefix + latest + ".md";
-    append_to_file(output, "### Latest changelog is for [" + latest + "](/" + latest_file + "):\n\n");
+    fs.appendFileSync(output, "### Latest changelog is for [" + latest + "](/" + latest_file + "):\n\n");
     if (!grunt.file.exists(latest_file)) {
       return grunt.fail.fatal("Changelog file \"" + latest_file + "\" not found.");
     } else {
-      append_to_file(output, grunt.file.read(latest_file));
-      return append_to_file(output, "\n");
+      fs.appendFileSync(output, grunt.file.read(latest_file));
+      return fs.appendFileSync(output, "\n");
     }
   };
-  generate_footer = function(output) {
-    var date, str;
+  generate_footer = function(opts) {
+    var date, output, str;
 
+    output = opts.output;
     date = new Date();
     str = "\n--------\n_This readme has been automatically generated by [readme generator](https://github.com/aponxi/grunt-readme-generator) on " + date + "._";
-    return append_to_file(output, str);
+    return fs.appendFileSync(output, str);
   };
   return grunt.registerMultiTask("readme_generator", "Generate Readme File", function() {
     var file, files, options, title;
@@ -151,18 +170,18 @@ module.exports = function(grunt) {
     grunt.file.write(options.output, "");
     files = this.data.order;
     if (options.banner != null) {
-      generate_banner(options.readme_folder, options.banner, options.output);
+      generate_banner(options);
     }
-    generate_title(options.output, options.has_travis, options.github_username);
-    generate_TOC(files, options.toc_extra_links, options.changelog_insert_before, options.output);
+    generate_title(options);
+    generate_TOC(files, options);
     for (file in files) {
       title = files[file];
       if (file === options.changelog_insert_before) {
-        generate_release_history(options.changelog_version_prefix, options.changelog_folder, options.has_travis, options.output);
+        generate_release_history(options);
       }
-      append(options.readme_folder, file, title, options.has_travis, options.output);
+      append(options, file, title);
     }
-    generate_footer(options.output);
+    generate_footer(options);
     return grunt.log.writeln("File \"" + options.output + "\" created.");
   });
 };
