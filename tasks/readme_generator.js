@@ -5,21 +5,55 @@ var fs;
 fs = require('fs');
 
 module.exports = function(grunt) {
-  var append, back_to_top, generate_TOC, generate_banner, generate_footer, generate_release_history, generate_title, get_file_extension, get_latest_changelog, is_valid_extention, make_anchor, pkg;
+  var append, back_to_top, generate_TOC, generate_banner, generate_footer, generate_release_history, generate_title, get_file_extension, get_latest_changelog, get_package_info, inform, is_valid_extention, make_anchor;
 
-  pkg = grunt.config.get(['pkg']);
-  if (pkg == null) {
-    grunt.fail.fatal("The package configuration is missing. Please add `pkg: grunt.file.readJSON('package.json')` to your grunt init in Gruntfile; or provide a `pkg` object in `grunt.config` with package name and description.");
-  }
+  inform = function(msg) {
+    return grunt.log.writeln(msg);
+  };
+  get_package_info = function(opts) {
+    var desc, is_package_json_needed, name, package_info, pkg;
+
+    is_package_json_needed = false;
+    if ((opts.package_name != null) && opts.package_name.length > 0) {
+      name = opts.package_name;
+    } else {
+      is_package_json_needed = true;
+    }
+    if ((opts.package_desc != null) && opts.package_desc.length > 0) {
+      desc = opts.package_desc;
+    } else {
+      is_package_json_needed = true;
+    }
+    if (is_package_json_needed) {
+      pkg = grunt.config.get(['pkg']);
+      if (pkg == null) {
+        grunt.fail.fatal("The package configuration is missing. Please add `pkg: grunt.file.readJSON('package.json')` to your grunt init in Gruntfile; or provide package_name and package_desc options");
+      } else {
+        if (name == null) {
+          name = pkg.name;
+        }
+        if (desc == null) {
+          desc = pkg.description;
+        }
+      }
+    }
+    package_info = {
+      name: name,
+      description: desc
+    };
+    return package_info;
+  };
   make_anchor = function(string) {
     var str;
 
     str = string.replace(/\s+/g, '-').toLowerCase();
     return str = "#" + str;
   };
-  back_to_top = function(travis) {
-    var result, str;
+  back_to_top = function(opts) {
+    var pkg, result, str, travis;
 
+    travis = opts.has_travis;
+    pkg = get_package_info(opts);
     str = make_anchor(pkg.name);
     if (travis) {
       str += "-";
@@ -107,11 +141,12 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, "\n");
   };
   generate_title = function(opts) {
-    var desc, output, title, tra, travis, username;
+    var desc, output, pkg, title, tra, travis, username;
 
     output = opts.output;
     travis = opts.has_travis;
     username = opts.github_username;
+    pkg = get_package_info(opts);
     title = pkg.name;
     desc = pkg.description;
     fs.appendFileSync(output, "# " + title + " ");
@@ -129,7 +164,7 @@ module.exports = function(grunt) {
     output = opts.output;
     fs.appendFileSync(output, "## " + title + "\n");
     if (opts.table_of_contents) {
-      top = back_to_top(travis);
+      top = back_to_top(opts);
       fs.appendFileSync(output, "" + top + "\n");
     }
     fs.appendFileSync(output, "\n");
@@ -189,14 +224,20 @@ module.exports = function(grunt) {
       banner: null,
       has_travis: true,
       generate_footer: true,
-      generate_changelog: true
+      generate_changelog: true,
+      generate_title: true,
+      package_name: "",
+      package_desc: "",
+      informative: true
     });
     grunt.file.write(options.output, "");
     files = this.data.order;
     if (options.banner != null) {
       generate_banner(options);
     }
-    generate_title(options);
+    if (options.generate_title) {
+      generate_title(options);
+    }
     if (options.table_of_contents) {
       generate_TOC(files, options);
     }

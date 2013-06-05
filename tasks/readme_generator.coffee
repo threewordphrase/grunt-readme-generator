@@ -9,15 +9,38 @@
 fs = require 'fs'
 module.exports = (grunt) ->
 
-  pkg = grunt.config.get ['pkg']
-  # console.log pkg
-  unless pkg?
-    grunt.fail.fatal "The package configuration is missing. Please add `pkg: grunt.file.readJSON('package.json')` to your grunt init in Gruntfile; or provide a `pkg` object in `grunt.config` with package name and description."
+  
+  
   # Please see the Grunt documentation for more information regarding task
   # creation: http://gruntjs.com/creating-tasks
   
   # helper functions
-  
+  inform = (msg) ->
+    grunt.log.writeln msg
+  get_package_info = (opts) ->
+    is_package_json_needed = no
+    if opts.package_name? and opts.package_name.length > 0 then name = opts.package_name
+    else is_package_json_needed = yes
+
+    if opts.package_desc? and opts.package_desc.length > 0 then desc = opts.package_desc
+    else is_package_json_needed = yes
+
+    # console.log is_package_json_needed
+
+    if is_package_json_needed
+      pkg = grunt.config.get ['pkg']
+      # console.log pkg
+      unless pkg?
+        grunt.fail.fatal "The package configuration is missing. Please add `pkg: grunt.file.readJSON('package.json')` to your grunt init in Gruntfile; or provide package_name and package_desc options"
+      else
+        unless name? then name = pkg.name
+        unless desc? then desc = pkg.description
+    package_info =
+      name:name
+      description : desc
+    # console.log package_info
+    package_info
+
 
   make_anchor = (string) ->
     #  make convert a string like "Special Thanks" to "special-thanks"
@@ -25,8 +48,10 @@ module.exports = (grunt) ->
     str = string.replace(/\s+/g, '-').toLowerCase()
     str = "#"+str
 
-  back_to_top = (travis) ->
+  back_to_top = (opts) ->
     # just creates the link
+    travis = opts.has_travis
+    pkg = get_package_info opts
     str = make_anchor pkg.name
     if travis then str += "-"
     result = "\[[Back To Top]\](#{str})"
@@ -120,7 +145,7 @@ module.exports = (grunt) ->
     output = opts.output
     travis = opts.has_travis
     username = opts.github_username
-
+    pkg = get_package_info opts
     title = pkg.name
     desc = pkg.description
     fs.appendFileSync output, "# #{title} "
@@ -138,7 +163,7 @@ module.exports = (grunt) ->
     fs.appendFileSync output, "## #{title}\n"
     # ~~toc dependant~~
     if opts.table_of_contents
-      top = back_to_top(travis)
+      top = back_to_top(opts)
       fs.appendFileSync output, "#{top}\n"
     fs.appendFileSync output, "\n"
     f = path+"/"+file
@@ -201,6 +226,10 @@ module.exports = (grunt) ->
       has_travis: on # I use travis a lot and want to have the travis image generated on the top
       generate_footer: on # generates footer
       generate_changelog: on # generates changelog
+      generate_title: on # generates title from package name and description
+      package_name : "" # by default we get it from the package.json
+      package_desc : "" # by default we get it from package.json
+      informative : yes # tell the people what's going on
     )
     # lets clean up the output readme
     grunt.file.write options.output, ""
@@ -211,7 +240,7 @@ module.exports = (grunt) ->
     if options.banner?
       generate_banner options
     # generate title and description
-    generate_title options
+    if options.generate_title then generate_title options
 
     if options.table_of_contents then generate_TOC files, options
 
