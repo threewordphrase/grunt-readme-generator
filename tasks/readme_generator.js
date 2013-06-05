@@ -87,7 +87,7 @@ module.exports = function(grunt) {
     fs.appendFileSync(output, "## Jump to Section\n\n");
     for (file in files) {
       title = files[file];
-      if (file === changelog_insert_before) {
+      if (file === changelog_insert_before && opts.generate_release_history) {
         release_title = make_anchor("Release History");
         fs.appendFileSync(output, "* [Release History](" + release_title + ")\n");
         link = make_anchor(title);
@@ -128,8 +128,11 @@ module.exports = function(grunt) {
     travis = opts.has_travis;
     output = opts.output;
     fs.appendFileSync(output, "## " + title + "\n");
-    top = back_to_top(travis);
-    fs.appendFileSync(output, "" + top + "\n\n");
+    if (opts.table_of_contents) {
+      top = back_to_top(travis);
+      fs.appendFileSync(output, "" + top + "\n");
+    }
+    fs.appendFileSync(output, "\n");
     f = path + "/" + file;
     if (!grunt.file.exists(f)) {
       return grunt.fail.fatal("Source file \"" + f + "\" not found.");
@@ -146,9 +149,11 @@ module.exports = function(grunt) {
     travis = opts.has_travis;
     output = opts.output;
     fs.appendFileSync(output, "## Release History\n");
-    top = back_to_top(travis);
-    fs.appendFileSync(output, "" + top + "\n\n");
-    fs.appendFileSync(output, "You can find [all the changelogs here](/" + changelog_folder + ").\n\n");
+    if (opts.table_of_contents) {
+      top = back_to_top(travis);
+      fs.appendFileSync(output, "" + top + "\n");
+    }
+    fs.appendFileSync(output, "\nYou can find [all the changelogs here](/" + changelog_folder + ").\n\n");
     latest = get_latest_changelog(opts);
     latest_file = changelog_folder + "/" + latest;
     latest_extension = get_file_extension(latest);
@@ -182,7 +187,9 @@ module.exports = function(grunt) {
       changelog_insert_before: "legal.md",
       toc_extra_links: [],
       banner: null,
-      has_travis: true
+      has_travis: true,
+      generate_footer: true,
+      generate_changelog: true
     });
     grunt.file.write(options.output, "");
     files = this.data.order;
@@ -190,15 +197,19 @@ module.exports = function(grunt) {
       generate_banner(options);
     }
     generate_title(options);
-    generate_TOC(files, options);
+    if (options.table_of_contents) {
+      generate_TOC(files, options);
+    }
     for (file in files) {
       title = files[file];
-      if (file === options.changelog_insert_before) {
+      if (file === options.changelog_insert_before && options.generate_changelog) {
         generate_release_history(options);
       }
       append(options, file, title);
     }
-    generate_footer(options);
+    if (options.generate_footer) {
+      generate_footer(options);
+    }
     return grunt.log.writeln("File \"" + options.output + "\" created.");
   });
 };

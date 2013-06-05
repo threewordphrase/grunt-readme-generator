@@ -3,17 +3,101 @@
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     clean: {
-      tests: ["test/readme.md"]
+      tests: ["test/readme.md", "test/readme_no_toc.md", "test/readme_all_options.md", "test/readme_no_travis.md", "test/readme_no_footer.md", "test/readme_no_changelog.md"]
     },
     readme_generator: {
-      test: {
+      no_toc: {
         options: {
-          has_travis: false,
-          output: "test/readme.md",
+          has_travis: true,
+          output: "test/readme_no_toc.md",
           table_of_contents: false,
           readme_folder: "test/readme",
           changelog_folder: "test/changelogs",
           changelog_version_prefix: "v",
+          toc_extra_links: ["[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)", "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"],
+          banner: "banner.md"
+        },
+        order: {
+          "installation.md": "Installation",
+          "usage.md": "Usage",
+          "options.md": "Options",
+          "example.md": "Example",
+          "output.md": "Example Output",
+          "building-and-testing.md": "Building and Testing",
+          "legal.md": "Legal Mambo Jambo"
+        }
+      },
+      all_options: {
+        options: {
+          has_travis: true,
+          output: "test/readme_all_options.md",
+          table_of_contents: true,
+          readme_folder: "test/readme",
+          changelog_folder: "test/changelogs",
+          changelog_version_prefix: "v",
+          toc_extra_links: ["[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)", "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"],
+          banner: "banner.md"
+        },
+        order: {
+          "installation.md": "Installation",
+          "usage.md": "Usage",
+          "options.md": "Options",
+          "example.md": "Example",
+          "output.md": "Example Output",
+          "building-and-testing.md": "Building and Testing",
+          "legal.md": "Legal Mambo Jambo"
+        }
+      },
+      no_travis: {
+        options: {
+          has_travis: false,
+          output: "test/readme_no_travis.md",
+          table_of_contents: true,
+          readme_folder: "test/readme",
+          changelog_folder: "test/changelogs",
+          changelog_version_prefix: "v",
+          toc_extra_links: ["[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)", "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"],
+          banner: "banner.md"
+        },
+        order: {
+          "installation.md": "Installation",
+          "usage.md": "Usage",
+          "options.md": "Options",
+          "example.md": "Example",
+          "output.md": "Example Output",
+          "building-and-testing.md": "Building and Testing",
+          "legal.md": "Legal Mambo Jambo"
+        }
+      },
+      no_footer: {
+        options: {
+          has_travis: true,
+          output: "test/readme_no_footer.md",
+          table_of_contents: true,
+          readme_folder: "test/readme",
+          changelog_folder: "test/changelogs",
+          changelog_version_prefix: "v",
+          toc_extra_links: ["[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)", "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"],
+          generate_footer: false,
+          banner: "banner.md"
+        },
+        order: {
+          "installation.md": "Installation",
+          "usage.md": "Usage",
+          "options.md": "Options",
+          "example.md": "Example",
+          "output.md": "Example Output",
+          "building-and-testing.md": "Building and Testing",
+          "legal.md": "Legal Mambo Jambo"
+        }
+      },
+      no_release_history: {
+        options: {
+          has_travis: true,
+          output: "test/readme_no_changelog.md",
+          table_of_contents: true,
+          readme_folder: "test/readme",
+          generate_changelog: false,
           toc_extra_links: ["[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)", "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"],
           banner: "banner.md"
         },
@@ -31,6 +115,6 @@
   });
   grunt.loadTasks("tasks");
   grunt.loadNpmTasks("grunt-contrib-clean");
-  grunt.registerTask("test", ["clean", "readme_generator:test"]);
+  grunt.registerTask("test", ["clean", "readme_generator:all_options", "readme_generator:no_toc", "readme_generator:no_travis", "readme_generator:no_footer", "readme_generator:no_release_history"]);
   return grunt.registerTask("default", ["build", "test"]);
 };

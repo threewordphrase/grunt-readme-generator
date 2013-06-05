@@ -44,8 +44,8 @@ module.exports = (grunt) ->
 
   get_latest_changelog = (opts)->
     #  get the latest changelog file and print it to the readme
-    # todo: what if the extension is .markdown or something else...
-    # currently only .md extensions are supported
+    # ~~what if the extension is .markdown or something else...~~
+    # ~~currently only .md extensions are supported~~
     prefix = opts.changelog_version_prefix
     changelog_folder = opts.changelog_folder
 
@@ -98,7 +98,7 @@ module.exports = (grunt) ->
     
     for file, title of files
     
-      if file is changelog_insert_before
+      if file is changelog_insert_before and opts.generate_release_history
         # release history is generated specially since the latest-changelog is generated dynamically.
         # console.log "inserting release history"
         release_title = make_anchor "Release History"
@@ -136,9 +136,11 @@ module.exports = (grunt) ->
     output = opts.output
 
     fs.appendFileSync output, "## #{title}\n"
-    # todo: toc dependant
-    top = back_to_top(travis)
-    fs.appendFileSync output, "#{top}\n\n"
+    # ~~toc dependant~~
+    if opts.table_of_contents
+      top = back_to_top(travis)
+      fs.appendFileSync output, "#{top}\n"
+    fs.appendFileSync output, "\n"
     f = path+"/"+file
     unless grunt.file.exists f
       grunt.fail.fatal "Source file \"" + f + "\" not found."
@@ -152,12 +154,13 @@ module.exports = (grunt) ->
     travis = opts.has_travis
     output = opts.output
     fs.appendFileSync output, "## Release History\n"
-    # todo: toc dependant
-    top = back_to_top(travis)
-    fs.appendFileSync output, "#{top}\n\n"
-    fs.appendFileSync output, "You can find [all the changelogs here](/#{changelog_folder}).\n\n"
+    # ~~toc dependant~~
+    if opts.table_of_contents
+      top = back_to_top(travis)
+      fs.appendFileSync output, "#{top}\n"
+    fs.appendFileSync output, "\nYou can find [all the changelogs here](/#{changelog_folder}).\n\n"
     latest = get_latest_changelog opts
-    # todo: only supporting .md format at the moment.
+    # ~~only supporting .md format at the moment.~~
     latest_file = changelog_folder + "/" + latest
 
     # let's get the version number from file v0.1.2.md, we just want 0.1.2
@@ -189,13 +192,15 @@ module.exports = (grunt) ->
       github_username: "aponxi" # this is mainly for travis link
       output: "README.md" # where readme file should be generated in respect to Gruntfile location
       table_of_contents: on # generate table of contents
-      readme_folder: "readme" # where readme partial files are located
+      readme_folder: "readme" # the folder where readme partial files are located
       changelog_folder: "changelogs" # where changelog files are located
       changelog_version_prefix: "v" # under changelog folder, there are files like v0.1.0.md if the prefix is "V"
       changelog_insert_before: "legal.md" # I like my legal stuff at the bottom of the readme
       toc_extra_links: [] # Sometimes I like adding quicklinks on the top in table of contents. Table of contents (TOC) must be enabled for this option to matter
       banner: null # I like some ascii art on the top of the readme
       has_travis: on # I use travis a lot and want to have the travis image generated on the top
+      generate_footer: on # generates footer
+      generate_changelog: on # generates changelog
     )
     # lets clean up the output readme
     grunt.file.write options.output, ""
@@ -207,13 +212,14 @@ module.exports = (grunt) ->
       generate_banner options
     # generate title and description
     generate_title options
-    generate_TOC files, options
+
+    if options.table_of_contents then generate_TOC files, options
 
     # Iterate over all specified file groups.
     for file, title of files
       # console.log "file: ", file
       # console.log "title: ", title
-      if file is options.changelog_insert_before
+      if file is options.changelog_insert_before and options.generate_changelog
         # add release history
         generate_release_history options
       append options, file, title
@@ -221,7 +227,8 @@ module.exports = (grunt) ->
     # after writing all the contents 
     
     # add footer
-    generate_footer options
+
+    if options.generate_footer then generate_footer options
     # Print a success message.
     grunt.log.writeln "File \"" + options.output + "\" created."
 
