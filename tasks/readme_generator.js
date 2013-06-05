@@ -234,18 +234,18 @@ module.exports = function(grunt) {
     var file, files, options, title;
 
     options = this.options({
-      github_username: "aponxi",
+      readme_folder: "readme",
       output: "README.md",
       table_of_contents: true,
-      readme_folder: "readme",
+      toc_extra_links: [],
+      generate_changelog: true,
       changelog_folder: "changelogs",
       changelog_version_prefix: "v",
       changelog_insert_before: "legal.md",
-      toc_extra_links: [],
       banner: null,
       has_travis: true,
+      github_username: "aponxi",
       generate_footer: true,
-      generate_changelog: true,
       generate_title: true,
       package_name: "",
       package_desc: "",

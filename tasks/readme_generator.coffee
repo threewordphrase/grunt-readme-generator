@@ -7,13 +7,7 @@
 # 
 "use strict"
 fs = require 'fs'
-module.exports = (grunt) ->
-
-  
-  
-  # Please see the Grunt documentation for more information regarding task
-  # creation: http://gruntjs.com/creating-tasks
-  
+module.exports = (grunt) ->  
   # helper functions
 
   # helps with debug messages
@@ -78,8 +72,6 @@ module.exports = (grunt) ->
   get_latest_changelog = (opts)->
     if opts.informative then inform "Getting the latest changelog"
     #  get the latest changelog file and print it to the readme
-    # ~~what if the extension is .markdown or something else...~~
-    # ~~currently only .md extensions are supported~~
     prefix = opts.changelog_version_prefix
     changelog_folder = opts.changelog_folder
 
@@ -92,17 +84,13 @@ module.exports = (grunt) ->
 
       if filename.substring(0,prefix.length) is prefix and grunt.file.isFile(changelog_folder+"/"+filename) and is_valid_extention filename
 
-        # -3 is for .md part
-        # version = filename.slice(prefix.length,-3)
-        
-        # now returning the whole file name
         versions_found.push filename
+    
     if versions_found.length > 0
       versions_found.sort()
       latest = versions_found[versions_found.length - 1]
       
-      # ~~returns just 0.1.1 from v0.1.1.md~~
-      # now returns the whole file name like v0.1.1.md
+      # returns the whole file name like v0.1.1.md
       latest
     else
       grunt.fail.fatal "No changelogs are present. Please write a changelog file or fix prefixes."
@@ -111,11 +99,13 @@ module.exports = (grunt) ->
 
   generate_banner = (opts) ->
     if opts.informative then inform "Generating banner"
+    
     path = opts.readme_folder
     banner_file = opts.banner
     output = opts.output
 
     f = path+"/"+banner_file
+    
     unless grunt.file.exists f
       grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
@@ -150,6 +140,7 @@ module.exports = (grunt) ->
       for i in toc_extra_links
         ex = i
         fs.appendFileSync output, "* #{ex}\n"
+    
     fs.appendFileSync output, "\n"
       
   generate_title = (opts) ->
@@ -160,12 +151,15 @@ module.exports = (grunt) ->
     pkg = get_package_info opts
     title = pkg.name
     desc = pkg.description
+    
     fs.appendFileSync output, "# #{title} "
 
     if travis
       if opts.informative then inform "Engineering travis button"
+      
       tra = "[![Build Status](https://secure.travis-ci.org/#{username}/#{title}.png?branch=master)](http://travis-ci.org/#{username}/#{title})"
       fs.appendFileSync output, "#{tra}"
+    
     fs.appendFileSync output, "\n\n> #{desc}\n\n"
 
   append = (opts, file, title) ->
@@ -174,12 +168,15 @@ module.exports = (grunt) ->
     output = opts.output
 
     fs.appendFileSync output, "## #{title}\n"
-    # ~~toc dependant~~
+
     if opts.table_of_contents
       top = back_to_top(opts)
       fs.appendFileSync output, "#{top}\n"
+    
     fs.appendFileSync output, "\n"
+
     f = path+"/"+file
+    
     unless grunt.file.exists f
       grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
@@ -192,14 +189,14 @@ module.exports = (grunt) ->
     changelog_folder = opts.changelog_folder
     travis = opts.has_travis
     output = opts.output
+
     fs.appendFileSync output, "## Release History\n"
-    # ~~toc dependant~~
+
     if opts.table_of_contents
       top = back_to_top(travis)
       fs.appendFileSync output, "#{top}\n"
     fs.appendFileSync output, "\nYou can find [all the changelogs here](/#{changelog_folder}).\n\n"
     latest = get_latest_changelog opts
-    # ~~only supporting .md format at the moment.~~
     latest_file = changelog_folder + "/" + latest
 
     # let's get the version number from file v0.1.2.md, we just want 0.1.2
@@ -229,22 +226,45 @@ module.exports = (grunt) ->
     
     # Merge task-specific and/or target-specific options with these defaults.
     options = @options(
-      github_username: "aponxi" # this is mainly for travis link
-      output: "README.md" # where readme file should be generated in respect to Gruntfile location
-      table_of_contents: on # generate table of contents
-      readme_folder: "readme" # the folder where readme partial files are located
-      changelog_folder: "changelogs" # where changelog files are located
-      changelog_version_prefix: "v" # under changelog folder, there are files like v0.1.0.md if the prefix is "V"
-      changelog_insert_before: "legal.md" # I like my legal stuff at the bottom of the readme
-      toc_extra_links: [] # Sometimes I like adding quicklinks on the top in table of contents. Table of contents (TOC) must be enabled for this option to matter
-      banner: null # I like some ascii art on the top of the readme
-      has_travis: on # I use travis a lot and want to have the travis image generated on the top
-      generate_footer: on # generates footer
-      generate_changelog: on # generates changelog
-      generate_title: on # generates title from package name and description
-      package_name : "" # by default we get it from the package.json
-      package_desc : "" # by default we get it from package.json
-      informative : yes # tell the people what's going on (verbose)
+      # the folder where readme partial files are located
+      readme_folder: "readme" 
+      # where readme file should be generated in respect to Gruntfile location
+      output: "README.md" 
+      
+      # generate table of contents
+      table_of_contents: on
+      # Sometimes I like adding quicklinks on the top in table of contents. Table of contents (TOC) must be enabled for this option to matter
+      toc_extra_links: [] 
+
+      # generates automatic changelog
+      generate_changelog: on 
+      # where changelog files are located
+      changelog_folder: "changelogs" 
+      # under changelog folder, there are files like v0.1.0.md if the prefix is "V"
+      changelog_version_prefix: "v" 
+      # I like my legal stuff at the bottom of the readme and release history before that
+      changelog_insert_before: "legal.md" 
+      
+      # I like some ascii art on the top of the readme
+      banner: null 
+
+      # I use travis a lot and want to have the travis image generated on the top
+      has_travis: on 
+      # this is mainly for travis link
+      github_username: "aponxi" 
+
+      # generates automatic footer that tells the time it was generated using this task
+      generate_footer: on 
+      
+      # generates automatic title from package name and description
+      generate_title: on 
+      # by default we get it from the package.json
+      package_name : "" 
+      # by default we get it from package.json
+      package_desc : "" 
+      
+      # tell the people what's going on (verbose)
+      informative : yes 
     )
     # lets clean up the output readme
     grunt.file.write options.output, ""
