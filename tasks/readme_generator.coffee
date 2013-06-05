@@ -244,7 +244,7 @@ module.exports = (grunt) ->
       generate_title: on # generates title from package name and description
       package_name : "" # by default we get it from the package.json
       package_desc : "" # by default we get it from package.json
-      informative : yes # tell the people what's going on
+      informative : yes # tell the people what's going on (verbose)
     )
     # lets clean up the output readme
     grunt.file.write options.output, ""
