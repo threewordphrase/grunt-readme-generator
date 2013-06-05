@@ -5,7 +5,7 @@ var fs;
 fs = require('fs');
 
 module.exports = function(grunt) {
-  var append, back_to_top, generate_TOC, generate_banner, generate_footer, generate_release_history, generate_title, get_latest_changelog, make_anchor, pkg;
+  var append, back_to_top, generate_TOC, generate_banner, generate_footer, generate_release_history, generate_title, get_file_extension, get_latest_changelog, is_valid_extention, make_anchor, pkg;
 
   pkg = grunt.config.get(['pkg']);
   if (pkg == null) {
@@ -24,10 +24,26 @@ module.exports = function(grunt) {
     if (travis) {
       str += "-";
     }
-    return result = "[Back To Top](" + str + ")";
+    return result = "\[[Back To Top]\](" + str + ")";
+  };
+  get_file_extension = function(file) {
+    var ext;
+
+    ext = file.split('.').pop();
+    return ext;
+  };
+  is_valid_extention = function(file) {
+    var ext;
+
+    ext = get_file_extension(file);
+    if (ext.toLowerCase() === "md" || ext.toLowerCase() === "markdown" || ext.toLowerCase() === "mdown") {
+      return true;
+    } else {
+      return false;
+    }
   };
   get_latest_changelog = function(opts) {
-    var changelog_folder, filename, files, latest, prefix, version, versions_found, _i, _len;
+    var changelog_folder, filename, files, latest, prefix, versions_found, _i, _len;
 
     prefix = opts.changelog_version_prefix;
     changelog_folder = opts.changelog_folder;
@@ -35,9 +51,8 @@ module.exports = function(grunt) {
     files = fs.readdirSync(changelog_folder);
     for (_i = 0, _len = files.length; _i < _len; _i++) {
       filename = files[_i];
-      if (filename.substring(0, prefix.length) === prefix && grunt.file.isFile(changelog_folder + "/" + filename)) {
-        version = filename.slice(prefix.length, -3);
-        versions_found.push(version);
+      if (filename.substring(0, prefix.length) === prefix && grunt.file.isFile(changelog_folder + "/" + filename) && is_valid_extention(filename)) {
+        versions_found.push(filename);
       }
     }
     if (versions_found.length > 0) {
@@ -124,7 +139,7 @@ module.exports = function(grunt) {
     }
   };
   generate_release_history = function(opts) {
-    var changelog_folder, latest, latest_file, output, prefix, top, travis;
+    var changelog_folder, latest, latest_extension, latest_file, latest_version, output, prefix, top, travis;
 
     prefix = opts.changelog_version_prefix;
     changelog_folder = opts.changelog_folder;
@@ -135,7 +150,9 @@ module.exports = function(grunt) {
     fs.appendFileSync(output, "" + top + "\n\n");
     fs.appendFileSync(output, "You can find [all the changelogs here](/" + changelog_folder + ").\n\n");
     latest = get_latest_changelog(opts);
-    latest_file = changelog_folder + "/" + prefix + latest + ".md";
+    latest_file = changelog_folder + "/" + latest;
+    latest_extension = get_file_extension(latest);
+    latest_version = latest.slice(prefix.length, -latest_extension.length - 1);
     fs.appendFileSync(output, "### Latest changelog is for [" + latest + "](/" + latest_file + "):\n\n");
     if (!grunt.file.exists(latest_file)) {
       return grunt.fail.fatal("Changelog file \"" + latest_file + "\" not found.");

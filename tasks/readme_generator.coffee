@@ -29,7 +29,18 @@ module.exports = (grunt) ->
     # just creates the link
     str = make_anchor pkg.name
     if travis then str += "-"
-    result = "[Back To Top](#{str})"
+    result = "\[[Back To Top]\](#{str})"
+
+  get_file_extension = (file) ->
+    ext = file.split('.').pop()
+    ext
+
+  is_valid_extention = (file) ->
+    ext = get_file_extension file
+    if ext.toLowerCase() is "md" or ext.toLowerCase() is "markdown" or ext.toLowerCase() is "mdown"
+      yes
+    else no
+
 
   get_latest_changelog = (opts)->
     #  get the latest changelog file and print it to the readme
@@ -45,15 +56,19 @@ module.exports = (grunt) ->
       # console.log filename.substring(0,prefix.length) is prefix
       # console.log grunt.file.isFile(changelog_folder+"/"+filename)
 
-      if filename.substring(0,prefix.length) is prefix and grunt.file.isFile(changelog_folder+"/"+filename)
+      if filename.substring(0,prefix.length) is prefix and grunt.file.isFile(changelog_folder+"/"+filename) and is_valid_extention filename
 
         # -3 is for .md part
-        version = filename.slice(prefix.length,-3)
-        versions_found.push version
+        # version = filename.slice(prefix.length,-3)
+        
+        # now returning the whole file name
+        versions_found.push filename
     if versions_found.length > 0
       versions_found.sort()
       latest = versions_found[versions_found.length - 1]
-      # returns just 0.1.1 from v0.1.1.md
+      
+      # ~~returns just 0.1.1 from v0.1.1.md~~
+      # now returns the whole file name like v0.1.1.md
       latest
     else
       grunt.fail.fatal "No changelogs are present. Please write a changelog file or fix prefixes."
@@ -121,6 +136,7 @@ module.exports = (grunt) ->
     output = opts.output
 
     fs.appendFileSync output, "## #{title}\n"
+    # todo: toc dependant
     top = back_to_top(travis)
     fs.appendFileSync output, "#{top}\n\n"
     f = path+"/"+file
@@ -136,12 +152,21 @@ module.exports = (grunt) ->
     travis = opts.has_travis
     output = opts.output
     fs.appendFileSync output, "## Release History\n"
+    # todo: toc dependant
     top = back_to_top(travis)
     fs.appendFileSync output, "#{top}\n\n"
     fs.appendFileSync output, "You can find [all the changelogs here](/#{changelog_folder}).\n\n"
     latest = get_latest_changelog opts
     # todo: only supporting .md format at the moment.
-    latest_file = changelog_folder + "/" + prefix + latest + ".md"
+    latest_file = changelog_folder + "/" + latest
+
+    # let's get the version number from file v0.1.2.md, we just want 0.1.2
+    
+    latest_extension = get_file_extension latest
+    # lets say extension is .md
+    # then we omit `md` (latest_extension.length) then `.` (-1)
+    latest_version = latest.slice(prefix.length, - latest_extension.length - 1)
+
     fs.appendFileSync output, "### Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
     unless grunt.file.exists latest_file
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
@@ -168,7 +193,7 @@ module.exports = (grunt) ->
       changelog_folder: "changelogs" # where changelog files are located
       changelog_version_prefix: "v" # under changelog folder, there are files like v0.1.0.md if the prefix is "V"
       changelog_insert_before: "legal.md" # I like my legal stuff at the bottom of the readme
-      toc_extra_links: [] # Sometimes I like adding quicklinks on the top in table of contents. Table of contents (TOC) must be enabled for this option
+      toc_extra_links: [] # Sometimes I like adding quicklinks on the top in table of contents. Table of contents (TOC) must be enabled for this option to matter
       banner: null # I like some ascii art on the top of the readme
       has_travis: on # I use travis a lot and want to have the travis image generated on the top
     )
