@@ -25,23 +25,26 @@ module.exports = function(grunt) {
     return result = "[Back To Top](" + str + ")";
   };
   get_latest_changelog = function(prefix, changelog_folder) {
-    var latest, versions_found;
+    var filename, files, latest, version, versions_found, _i, _len;
 
     versions_found = [];
-    grunt.file.recurse(changelog_folder, function(abspath, rootdir, subdir, filename) {
-      var version;
-
-      if (filename.substring(0, prefix.length) === prefix) {
+    files = fs.readdirSync(changelog_folder);
+    console.log(files);
+    for (_i = 0, _len = files.length; _i < _len; _i++) {
+      filename = files[_i];
+      console.log(filename.substring(0, prefix.length) === prefix);
+      console.log(grunt.file.isFile(changelog_folder + "/" + filename));
+      if (filename.substring(0, prefix.length) === prefix && grunt.file.isFile(changelog_folder + "/" + filename)) {
         version = filename.slice(prefix.length, -3);
-        return versions_found.push(version);
+        versions_found.push(version);
       }
-    });
+    }
     if (versions_found.length > 0) {
       versions_found.sort();
       latest = versions_found[versions_found.length(-1)];
       return latest;
     } else {
-      grunt.fail.error("No changelogs are present. Please write a changelog file or fix prefixes.");
+      grunt.fail.fatal("No changelogs are present. Please write a changelog file or fix prefixes.");
       return false;
     }
   };
@@ -50,7 +53,7 @@ module.exports = function(grunt) {
 
     f = path + "/" + banner_file;
     if (!grunt.file.exists(f)) {
-      return grunt.fail.error("Source file \"" + f + "\" not found.");
+      return grunt.fail.fatal("Source file \"" + f + "\" not found.");
     } else {
       append_to_file(output, grunt.file.read(f));
       return append_to_file(output, "\n");
@@ -93,12 +96,12 @@ module.exports = function(grunt) {
   append = function(path, file, title, output) {
     var f, top;
 
-    append_to_file(output, "## " + title + "\n");
+    append_to_file(output, "\n## " + title + "\n");
     top = back_to_top();
     append_to_file(output, "" + top + "\n\n");
     f = path + "/" + file;
     if (!grunt.file.exists(f)) {
-      return grunt.fail.error("Source file \"" + f + "\" not found.");
+      return grunt.fail.fatal("Source file \"" + f + "\" not found.");
     } else {
       append_to_file(output, grunt.file.read(f));
       return append_to_file(output, "\n");
@@ -115,9 +118,10 @@ module.exports = function(grunt) {
     latest_file = prefix + latest + ".md";
     append_to_file(output, "### Latest changelog is for [" + latest + "](" + changelog_folder + "/latest_file):");
     if (!grunt.file.exists(latest_file)) {
-      return grunt.fail.error("Changelog file \"" + latest_file + "\" not found.");
+      return grunt.fail.fatal("Changelog file \"" + latest_file + "\" not found.");
     } else {
-      return append_to_file(output, grunt.file.read(latest_file));
+      append_to_file(output, grunt.file.read(latest_file));
+      return append_to_file(output, "\n");
     }
   };
   generate_footer = function(output) {
@@ -153,6 +157,7 @@ module.exports = function(grunt) {
       title = files[file];
       append(options.readme_folder, file, title, options.output);
     }
+    generate_release_history(options.changelog_version_prefix, options.changelog_folder, options.output);
     generate_footer(options.output);
     return grunt.log.writeln("File \"" + options.output + "\" created.");
   });

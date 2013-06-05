@@ -34,8 +34,14 @@ module.exports = (grunt) ->
     # todo: what if the extension is .markdown or something else...
     # currently only .md extensions are supported
     versions_found = []
-    grunt.file.recurse changelog_folder, (abspath, rootdir, subdir, filename) ->
-      if filename.substring(0,prefix.length) is prefix
+    files = fs.readdirSync changelog_folder
+    console.log files
+    for filename in files
+      console.log filename.substring(0,prefix.length) is prefix
+      console.log grunt.file.isFile(changelog_folder+"/"+filename)
+
+      if filename.substring(0,prefix.length) is prefix and grunt.file.isFile(changelog_folder+"/"+filename)
+
         # -3 is for .md part
         version = filename.slice(prefix.length,-3)
         versions_found.push version
@@ -44,14 +50,14 @@ module.exports = (grunt) ->
       latest = versions_found[versions_found.length -1]
       latest
     else
-      grunt.fail.error "No changelogs are present. Please write a changelog file or fix prefixes."
+      grunt.fail.fatal "No changelogs are present. Please write a changelog file or fix prefixes."
       false
 
 
   generate_banner = (path, banner_file, output) ->
     f = path+"/"+banner_file
     unless grunt.file.exists f
-      grunt.fail.error "Source file \"" + f + "\" not found."
+      grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
       append_to_file output, grunt.file.read f
       append_to_file output, "\n"
@@ -88,12 +94,12 @@ module.exports = (grunt) ->
     append_to_file output, "\n\n> #{desc}\n\n"
 
   append = (path, file, title, output) ->
-    append_to_file output, "## #{title}\n"
+    append_to_file output, "\n## #{title}\n"
     top = back_to_top()
     append_to_file output, "#{top}\n\n"
     f = path+"/"+file
     unless grunt.file.exists f
-      grunt.fail.error "Source file \"" + f + "\" not found."
+      grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
       append_to_file output, grunt.file.read f 
       append_to_file output, "\n"
@@ -109,9 +115,10 @@ module.exports = (grunt) ->
     latest_file = prefix + latest + ".md"
     append_to_file output, "### Latest changelog is for [#{latest}](#{changelog_folder}/latest_file):"
     unless grunt.file.exists latest_file
-      grunt.fail.error "Changelog file \"" + latest_file + "\" not found."
+      grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
       append_to_file output, grunt.file.read latest_file 
+      append_to_file output, "\n"
 
 
   generate_footer = (output) ->
@@ -153,7 +160,10 @@ module.exports = (grunt) ->
       # console.log "title: ", title
       append options.readme_folder, file, title, options.output
 
-    # after writing all the contents add footer
+    # after writing all the contents 
+    # add release history
+    generate_release_history options.changelog_version_prefix, options.changelog_folder, options.output
+    # add footer
     generate_footer options.output
     # Print a success message.
     grunt.log.writeln "File \"" + options.output + "\" created."
