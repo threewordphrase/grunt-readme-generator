@@ -110,11 +110,38 @@
           "building-and-testing.md": "Building and Testing",
           "legal.md": "Legal Mambo Jambo"
         }
+      },
+      this_readme: {
+        options: {
+          readme_folder: "readme",
+          output: "README.md",
+          table_of_contents: true,
+          toc_extra_links: ["[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)", "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"],
+          generate_changelog: true,
+          changelog_folder: "changelogs",
+          changelog_version_prefix: "v",
+          changelog_insert_before: "legal.md",
+          banner: "banner.md",
+          has_travis: false,
+          github_username: "",
+          generate_footer: true,
+          generate_title: true,
+          package_name: "",
+          package_desc: "",
+          informative: true
+        },
+        order: {
+          "getting_started.md": "Getting Started",
+          "usage.md": "Usage",
+          "options.md": "Options",
+          "legal.md": "Legal Mambo Jambo"
+        }
       }
     }
   });
   grunt.loadTasks("tasks");
   grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.registerTask("test", ["clean", "readme_generator:all_options", "readme_generator:no_toc", "readme_generator:no_travis", "readme_generator:no_footer", "readme_generator:no_release_history"]);
-  return grunt.registerTask("default", ["build", "test"]);
+  grunt.registerTask("build", ["readme_generator:this_readme"]);
+  return grunt.registerTask("default", ["build"]);
 };

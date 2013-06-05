@@ -142,7 +142,7 @@ module.exports = function(grunt) {
         fs.appendFileSync(output, "* [" + title + "](" + link + ")\n");
       }
     }
-    if (opts.generate_changelog && !changelog_inserted) {
+    if (opts.generate_changelog && changelog_inserted === false) {
       release_title = make_anchor("Release History");
       fs.appendFileSync(output, "* [Release History](" + release_title + ")\n");
     }
@@ -273,10 +273,11 @@ module.exports = function(grunt) {
       title = files[file];
       if (file === options.changelog_insert_before && options.generate_changelog) {
         generate_release_history(options);
+        changelog_inserted = true;
       }
       append(options, file, title);
     }
-    if (options.generate_changelog && !changelog_inserted) {
+    if (options.generate_changelog && changelog_inserted === false) {
       generate_release_history(options);
     }
     if (options.generate_footer) {

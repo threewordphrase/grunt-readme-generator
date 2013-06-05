@@ -138,7 +138,7 @@ module.exports = (grunt) ->
         fs.appendFileSync output, "* [#{title}](#{link})\n"
     
     # what if changelog wasn't inserted?
-    if opts.generate_changelog and not changelog_inserted
+    if opts.generate_changelog and changelog_inserted is false
       # lets insert it at the end
       release_title = make_anchor "Release History"
       fs.appendFileSync output, "* [Release History](#{release_title})\n"
@@ -295,17 +295,18 @@ module.exports = (grunt) ->
       if file is options.changelog_insert_before and options.generate_changelog
         # add release history
         generate_release_history options
+        changelog_inserted = yes
       append options, file, title
 
     # what if changelog wasn't inserted?
-    if options.generate_changelog and not changelog_inserted
+    if options.generate_changelog and changelog_inserted is false
       # lets insert it at the end
       generate_release_history options
 
     # after writing all the contents 
     # add footer
     if options.generate_footer then generate_footer options
-    
+
     # Print a success message.
     grunt.log.writeln "Your readme file \"" + options.output + "\" is ready!"
     grunt.log.ok()
