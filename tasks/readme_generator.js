@@ -14,7 +14,6 @@ module.exports = function(grunt) {
   make_anchor = function(string) {
     var str;
 
-    console.log(string);
     str = string.replace(/\s+/g, '-').toLowerCase();
     return str = "#" + str;
   };
@@ -61,7 +60,6 @@ module.exports = function(grunt) {
     var ex, file, i, link, release_title, title, _i, _len;
 
     append_to_file(output, "## Jump to Section\n\n");
-    console.dir(files);
     for (file in files) {
       title = files[file];
       if (file === changelog_insert_before) {
@@ -152,8 +150,7 @@ module.exports = function(grunt) {
     generate_TOC(files, options.toc_extra_links, options.changelog_insert_before, options.output);
     for (file in files) {
       title = files[file];
-      console.log("file: ", file);
-      console.log("title: ", title);
+      append(options.readme_folder, file, title, options.output);
     }
     generate_footer(options.output);
     return grunt.log.writeln("File \"" + options.output + "\" created.");

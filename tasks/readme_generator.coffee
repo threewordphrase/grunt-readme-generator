@@ -20,7 +20,7 @@ module.exports = (grunt) ->
 
   make_anchor = (string) ->
     #  make convert a string like "Special Thanks" to "special-thanks"
-    console.log string
+    # console.log string
     str = string.replace(/\s+/g, '-').toLowerCase()
     str = "#"+str
 
@@ -59,7 +59,7 @@ module.exports = (grunt) ->
 
   generate_TOC = (files, toc_extra_links, changelog_insert_before, output) ->
     append_to_file output, "## Jump to Section\n\n"
-    console.dir files
+    # console.dir files
     
     for file, title of files
     
@@ -148,9 +148,10 @@ module.exports = (grunt) ->
 
     # Iterate over all specified file groups.
     for file, title of files
-      console.log "file: ", file
-      console.log "title: ", title
-      
+      # console.log "file: ", file
+      # console.log "title: ", title
+      append options.readme_folder, file, title, options.output
+
     # after writing all the contents add footer
     generate_footer options.output
     # Print a success message.
