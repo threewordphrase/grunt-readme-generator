@@ -121,10 +121,11 @@ module.exports = (grunt) ->
 
     fs.appendFileSync output, "## Jump to Section\n\n"
     # console.dir files
-    
+    changelog_inserted = no
     for file, title of files
     
-      if file is changelog_insert_before and opts.generate_release_history
+      if file is changelog_insert_before and opts.generate_changelog
+        changelog_inserted = yes
         # release history is generated specially since the latest-changelog is generated dynamically.
         # console.log "inserting release history"
         release_title = make_anchor "Release History"
@@ -136,6 +137,12 @@ module.exports = (grunt) ->
         link = make_anchor title
         fs.appendFileSync output, "* [#{title}](#{link})\n"
     
+    # what if changelog wasn't inserted?
+    if opts.generate_changelog and not changelog_inserted
+      # lets insert it at the end
+      release_title = make_anchor "Release History"
+      fs.appendFileSync output, "* [Release History](#{release_title})\n"
+
     if toc_extra_links.length > 0
       for i in toc_extra_links
         ex = i
@@ -230,7 +237,7 @@ module.exports = (grunt) ->
       readme_folder: "readme" 
       # where readme file should be generated in respect to Gruntfile location
       output: "README.md" 
-      
+
       # generate table of contents
       table_of_contents: on
       # Sometimes I like adding quicklinks on the top in table of contents. Table of contents (TOC) must be enabled for this option to matter
@@ -279,6 +286,8 @@ module.exports = (grunt) ->
 
     if options.table_of_contents then generate_TOC files, options
 
+    changelog_inserted = no
+
     # Iterate over all specified file groups.
     for file, title of files
       # console.log "file: ", file
@@ -288,11 +297,15 @@ module.exports = (grunt) ->
         generate_release_history options
       append options, file, title
 
-    # after writing all the contents 
-    
-    # add footer
+    # what if changelog wasn't inserted?
+    if options.generate_changelog and not changelog_inserted
+      # lets insert it at the end
+      generate_release_history options
 
+    # after writing all the contents 
+    # add footer
     if options.generate_footer then generate_footer options
+    
     # Print a success message.
     grunt.log.writeln "Your readme file \"" + options.output + "\" is ready!"
     grunt.log.ok()

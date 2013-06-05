@@ -119,7 +119,7 @@ module.exports = function(grunt) {
     }
   };
   generate_TOC = function(files, opts) {
-    var changelog_insert_before, ex, file, i, link, output, release_title, title, toc_extra_links, _i, _len;
+    var changelog_insert_before, changelog_inserted, ex, file, i, link, output, release_title, title, toc_extra_links, _i, _len;
 
     if (opts.informative) {
       inform("Generating table of contents");
@@ -128,9 +128,11 @@ module.exports = function(grunt) {
     changelog_insert_before = opts.changelog_insert_before;
     output = opts.output;
     fs.appendFileSync(output, "## Jump to Section\n\n");
+    changelog_inserted = false;
     for (file in files) {
       title = files[file];
-      if (file === changelog_insert_before && opts.generate_release_history) {
+      if (file === changelog_insert_before && opts.generate_changelog) {
+        changelog_inserted = true;
         release_title = make_anchor("Release History");
         fs.appendFileSync(output, "* [Release History](" + release_title + ")\n");
         link = make_anchor(title);
@@ -139,6 +141,10 @@ module.exports = function(grunt) {
         link = make_anchor(title);
         fs.appendFileSync(output, "* [" + title + "](" + link + ")\n");
       }
+    }
+    if (opts.generate_changelog && !changelog_inserted) {
+      release_title = make_anchor("Release History");
+      fs.appendFileSync(output, "* [Release History](" + release_title + ")\n");
     }
     if (toc_extra_links.length > 0) {
       for (_i = 0, _len = toc_extra_links.length; _i < _len; _i++) {
@@ -231,7 +237,7 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, str);
   };
   return grunt.registerMultiTask("readme_generator", "Generate Readme File", function() {
-    var file, files, options, title;
+    var changelog_inserted, file, files, options, title;
 
     options = this.options({
       readme_folder: "readme",
@@ -262,12 +268,16 @@ module.exports = function(grunt) {
     if (options.table_of_contents) {
       generate_TOC(files, options);
     }
+    changelog_inserted = false;
     for (file in files) {
       title = files[file];
       if (file === options.changelog_insert_before && options.generate_changelog) {
         generate_release_history(options);
       }
       append(options, file, title);
+    }
+    if (options.generate_changelog && !changelog_inserted) {
+      generate_release_history(options);
     }
     if (options.generate_footer) {
       generate_footer(options);
