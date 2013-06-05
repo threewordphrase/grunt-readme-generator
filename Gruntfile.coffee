@@ -10,6 +10,7 @@ module.exports = (grunt) ->
   
   # Project configuration.
   grunt.initConfig
+    pkg: grunt.file.readJSON('package.json')
     jshint:
       all: ["Gruntfile.js", "tasks/*.js", "<%= nodeunit.tests %>"]
       options:
@@ -36,7 +37,7 @@ module.exports = (grunt) ->
           ]
           banner: "banner.md"
 
-        files:
+        order:
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -63,7 +64,7 @@ module.exports = (grunt) ->
   
   # Whenever the "test" task is run, first clean the "tmp" dir, then run this
   # plugin's task(s), then test the result.
-  grunt.registerTask "test", ["clean", "readme_generator", "nodeunit"]
+  grunt.registerTask "test", ["clean", "readme_generator"]
   
   # By default, lint and run all tests.
   grunt.registerTask "default", ["jshint", "test"]
