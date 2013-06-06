@@ -1,13 +1,27 @@
 {
   "name": "grunt-readme-generator",
   "description": "A grunt task to generate a dynamic readme.md from partial markdown files in readme folder.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/aponxi/grunt-readme-generator",
   "author": {
     "name": "Logan Howlett",
     "email": "aponxi@weaponxi.com",
     "url": "www.weaponxi.com"
   },
+   "keywords": [
+    "markdown",
+    "md",
+    "readme",
+    "generator",
+    "grunt",
+    "task",
+    "mdown",
+    "markdown-generator",
+    "utility",
+    "project-helper",
+    "weaponxi"
+  ],
+
   "repository": {
     "type": "git",
     "url": "git://github.com:aponxi/grunt-readme-generator.git"
@@ -26,8 +40,7 @@
     "node": ">= 0.10.9"
   },
   "scripts": {
-    "test": "grunt test",
-    "prepublish": "grunt build"
+    "test": "grunt test"
   },
   "devDependencies": {
     "grunt-contrib-clean": "~0.4.0",
