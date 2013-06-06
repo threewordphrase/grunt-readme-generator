@@ -305,7 +305,10 @@ module.exports = (grunt) ->
         # add release history
         generate_release_history options
         changelog_inserted = yes
-      append options, file, title
+        append options, file, title
+      else
+        append options, file, title
+      
 
     # what if changelog wasn't inserted?
     if options.generate_changelog and changelog_inserted is false

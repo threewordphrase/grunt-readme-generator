@@ -10,3 +10,4 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 
 ```js
 grunt.loadNpmTasks('grunt-readme-generator');
+```

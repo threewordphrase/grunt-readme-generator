@@ -282,8 +282,10 @@ module.exports = function(grunt) {
       if (file === options.changelog_insert_before && options.generate_changelog) {
         generate_release_history(options);
         changelog_inserted = true;
+        append(options, file, title);
+      } else {
+        append(options, file, title);
       }
-      append(options, file, title);
     }
     if (options.generate_changelog && changelog_inserted === false) {
       generate_release_history(options);
