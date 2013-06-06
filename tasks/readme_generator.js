@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     return grunt.log.oklns(msg + "...");
   };
   get_package_info = function(opts) {
-    var desc, is_package_json_needed, name, package_info, pkg;
+    var desc, is_package_json_needed, name, package_info, pkg, title;
 
     is_package_json_needed = false;
     if ((opts.package_name != null) && opts.package_name.length > 0) {
@@ -37,9 +37,15 @@ module.exports = function(grunt) {
         }
       }
     }
+    if (opts.package_title != null) {
+      title = opts.package_title;
+    } else {
+      title = name;
+    }
     package_info = {
       name: name,
-      description: desc
+      description: desc,
+      title: title
     };
     return package_info;
   };
@@ -254,16 +260,21 @@ module.exports = function(grunt) {
       toc_extra_links: [],
       generate_changelog: false,
       changelog_folder: "changelogs",
-      changelog_version_prefix: "",
-      changelog_insert_before: "",
+      changelog_version_prefix: null,
+      changelog_insert_before: null,
       banner: null,
       has_travis: true,
       github_username: "aponxi",
+      travis_branch: "master",
       generate_footer: true,
       generate_title: true,
-      package_name: "",
-      package_desc: "",
-      informative: true
+      package_title: null,
+      package_name: null,
+      package_desc: null,
+      informative: true,
+      h1: "#",
+      h2: "##",
+      back_to_top_custom: null
     });
     grunt.file.write(options.output, "");
     files = this.data.order;

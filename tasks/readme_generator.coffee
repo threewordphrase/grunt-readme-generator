@@ -37,9 +37,14 @@ module.exports = (grunt) ->
         unless name? then name = pkg.name
         unless desc? then desc = pkg.description
         # if opts.informative then inform "Got the necessary information from package.json"
+
+    if opts.package_title? then title = opts.package_title
+    else title = name 
+
     package_info =
-      name:name
+      name: name
       description : desc
+      title: title
     # console.log package_info
     package_info
 
@@ -257,9 +262,9 @@ module.exports = (grunt) ->
       # where changelog files are located
       changelog_folder: "changelogs"
       # under changelog folder, there are files like v0.1.0.md if the prefix is "V"
-      changelog_version_prefix: ""
+      changelog_version_prefix: null
       # I like my legal stuff at the bottom of the readme and release history before that
-      changelog_insert_before: ""
+      changelog_insert_before: null
     
       # I like some ascii art on the top of the readme
       banner: null
@@ -268,19 +273,34 @@ module.exports = (grunt) ->
       has_travis: on
       # this is mainly for travis link
       github_username: "aponxi"
+      # this specifies the travis branch that you want to use for the build status logo
+      travis_branch : "master"
 
       # generates automatic footer that tells the time it was generated using this task
       generate_footer: on
     
       # generates automatic title from package name and description
       generate_title: on
+      # This can be different than the package name, this will be on the title of the readme
+      # and used for anchor purposes to go back to the top
+      package_title: null
       # by default we get it from the package.json
-      package_name : ""
+      package_name : null
       # by default we get it from package.json
-      package_desc : ""
+      package_desc : null
     
       # tell the people what's going on (verbose)
       informative : yes
+
+      # Formatting Options -----
+      # for the auto generated title of the readme
+      h1 : "#"
+      # for the auto generated title of the section, 
+      # like usage or legal or installation parts of the readme
+      h2 : "##"
+      # where backtotop leads you
+      # by default it takes you to the title of the readme
+      back_to_top_custom : null
     )
     # lets clean up the output readme
     grunt.file.write options.output, ""
