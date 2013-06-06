@@ -137,7 +137,7 @@ module.exports = function(grunt) {
     }
   };
   generate_TOC = function(files, opts) {
-    var changelog_insert_before, changelog_inserted, ex, file, i, link, output, release_title, title, toc_extra_links, _i, _len;
+    var changelog_insert_before, changelog_inserted, ex, file, h2, i, link, output, release_title, title, toc_extra_links, _i, _len;
 
     if (opts.informative) {
       inform("Generating table of contents");
@@ -145,7 +145,8 @@ module.exports = function(grunt) {
     toc_extra_links = opts.toc_extra_links;
     changelog_insert_before = opts.changelog_insert_before;
     output = opts.output;
-    fs.appendFileSync(output, "## Jump to Section\n\n");
+    h2 = opts.h2;
+    fs.appendFileSync(output, "" + h2 + " Jump to Section\n\n");
     changelog_inserted = false;
     for (file in files) {
       title = files[file];
@@ -174,7 +175,7 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, "\n");
   };
   generate_title = function(opts) {
-    var branch, desc, output, pkg, title, tra, travis, username;
+    var branch, desc, h1, output, pkg, title, tra, travis, username;
 
     if (opts.informative) {
       inform("Writing package name and description");
@@ -186,7 +187,8 @@ module.exports = function(grunt) {
     title = pkg.title;
     desc = pkg.description;
     branch = opts.travis_branch;
-    fs.appendFileSync(output, "# " + title + " ");
+    h1 = opts.h1;
+    fs.appendFileSync(output, "" + h1 + " " + title + " ");
     if (travis) {
       if (opts.informative) {
         inform("Engineering travis button");
@@ -197,12 +199,13 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, "\n\n> " + desc + "\n\n");
   };
   append = function(opts, file, title) {
-    var f, output, path, top, travis;
+    var f, h2, output, path, top, travis;
 
     path = opts.readme_folder;
     travis = opts.has_travis;
     output = opts.output;
-    fs.appendFileSync(output, "## " + title + "\n");
+    h2 = opts.h2;
+    fs.appendFileSync(output, "" + h2 + " " + title + "\n");
     if (opts.table_of_contents) {
       top = back_to_top(opts);
       fs.appendFileSync(output, "" + top + "\n");
@@ -217,7 +220,7 @@ module.exports = function(grunt) {
     }
   };
   generate_release_history = function(opts) {
-    var changelog_folder, latest, latest_extension, latest_file, latest_version, output, prefix, top, travis;
+    var changelog_folder, h2, latest, latest_extension, latest_file, latest_version, output, prefix, top, travis;
 
     if (opts.informative) {
       inform("Digging the past for release information");
@@ -226,7 +229,8 @@ module.exports = function(grunt) {
     changelog_folder = opts.changelog_folder;
     travis = opts.has_travis;
     output = opts.output;
-    fs.appendFileSync(output, "## Release History\n");
+    h2 = opts.h2;
+    fs.appendFileSync(output, "" + h2 + " Release History\n");
     if (opts.table_of_contents) {
       top = back_to_top(travis);
       fs.appendFileSync(output, "" + top + "\n");
@@ -236,7 +240,7 @@ module.exports = function(grunt) {
     latest_file = changelog_folder + "/" + latest;
     latest_extension = get_file_extension(latest);
     latest_version = latest.slice(prefix.length, -latest_extension.length - 1);
-    fs.appendFileSync(output, "### Latest changelog is for [" + latest + "](/" + latest_file + "):\n\n");
+    fs.appendFileSync(output, "" + h2 + "# Latest changelog is for [" + latest + "](/" + latest_file + "):\n\n");
     if (!grunt.file.exists(latest_file)) {
       return grunt.fail.fatal("Changelog file \"" + latest_file + "\" not found.");
     } else {

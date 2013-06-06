@@ -139,8 +139,9 @@ module.exports = (grunt) ->
     toc_extra_links = opts.toc_extra_links
     changelog_insert_before = opts.changelog_insert_before
     output = opts.output
+    h2 = opts.h2
 
-    fs.appendFileSync output, "## Jump to Section\n\n"
+    fs.appendFileSync output, "#{h2} Jump to Section\n\n"
     # console.dir files
     changelog_inserted = no
     for file, title of files
@@ -180,8 +181,9 @@ module.exports = (grunt) ->
     title = pkg.title
     desc = pkg.description
     branch = opts.travis_branch
+    h1 = opts.h1
   
-    fs.appendFileSync output, "# #{title} "
+    fs.appendFileSync output, "#{h1} #{title} "
 
     if travis
       if opts.informative then inform "Engineering travis button"
@@ -195,8 +197,9 @@ module.exports = (grunt) ->
     path = opts.readme_folder
     travis = opts.has_travis
     output = opts.output
+    h2 = opts.h2
 
-    fs.appendFileSync output, "## #{title}\n"
+    fs.appendFileSync output, "#{h2} #{title}\n"
 
     if opts.table_of_contents
       top = back_to_top(opts)
@@ -218,8 +221,8 @@ module.exports = (grunt) ->
     changelog_folder = opts.changelog_folder
     travis = opts.has_travis
     output = opts.output
-
-    fs.appendFileSync output, "## Release History\n"
+    h2 = opts.h2
+    fs.appendFileSync output, "#{h2} Release History\n"
 
     if opts.table_of_contents
       top = back_to_top(travis)
@@ -235,7 +238,7 @@ module.exports = (grunt) ->
     # then we omit `md` (latest_extension.length) then `.` (-1)
     latest_version = latest.slice(prefix.length, - latest_extension.length - 1)
 
-    fs.appendFileSync output, "### Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
+    fs.appendFileSync output, "#{h2}# Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
     unless grunt.file.exists latest_file
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
