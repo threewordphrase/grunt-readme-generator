@@ -230,7 +230,7 @@ module.exports = function(grunt) {
       return grunt.fail.fatal("Changelog file \"" + latest_file + "\" not found.");
     } else {
       fs.appendFileSync(output, grunt.file.read(latest_file));
-      return fs.appendFileSync(output, "\n");
+      return fs.appendFileSync(output, "\n\n");
     }
   };
   generate_footer = function(opts) {

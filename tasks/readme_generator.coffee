@@ -227,7 +227,7 @@ module.exports = (grunt) ->
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
       fs.appendFileSync output, grunt.file.read latest_file 
-      fs.appendFileSync output, "\n"
+      fs.appendFileSync output, "\n\n"
 
 
   generate_footer = (opts) ->
