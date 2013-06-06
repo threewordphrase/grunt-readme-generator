@@ -58,9 +58,16 @@ module.exports = (grunt) ->
   back_to_top = (opts) ->
     # just creates the link
     travis = opts.has_travis
-    pkg = get_package_info opts
-    str = make_anchor pkg.name
-    if travis then str += "-"
+    pkg = opts.pkg
+
+    # by default we use pkg name
+    # if title is provided we use title
+    # if back to top option was provided then we use that
+    if opts.back_to_top_custom? then str = opts.back_to_top_custom
+    else
+      str = make_anchor pkg.title
+      if travis then str += "-"
+
     result = "\[[Back To Top]\](#{str})"
 
   get_file_extension = (file) ->
@@ -169,16 +176,17 @@ module.exports = (grunt) ->
     output = opts.output
     travis = opts.has_travis
     username = opts.github_username
-    pkg = get_package_info opts
-    title = pkg.name
+    pkg = opts.pkg
+    title = pkg.title
     desc = pkg.description
+    branch = opts.travis_branch
   
     fs.appendFileSync output, "# #{title} "
 
     if travis
       if opts.informative then inform "Engineering travis button"
-    
-      tra = "[![Build Status](https://secure.travis-ci.org/#{username}/#{title}.png?branch=master)](http://travis-ci.org/#{username}/#{title})"
+      
+      tra = "[![Build Status](https://secure.travis-ci.org/#{username}/#{title}.png?branch=#{branch})](http://travis-ci.org/#{username}/#{title})"
       fs.appendFileSync output, "#{tra}"
   
     fs.appendFileSync output, "\n\n> #{desc}\n\n"
@@ -305,6 +313,10 @@ module.exports = (grunt) ->
     # lets clean up the output readme
     grunt.file.write options.output, ""
 
+    # lets get the package info and pass it to options
+
+    pkg = get_package_info options
+    options.pkg = pkg
 
     files = @data.order
     # generate banner

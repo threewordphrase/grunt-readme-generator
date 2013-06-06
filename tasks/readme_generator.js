@@ -59,10 +59,14 @@ module.exports = function(grunt) {
     var pkg, result, str, travis;
 
     travis = opts.has_travis;
-    pkg = get_package_info(opts);
-    str = make_anchor(pkg.name);
-    if (travis) {
-      str += "-";
+    pkg = opts.pkg;
+    if (opts.back_to_top_custom != null) {
+      str = opts.back_to_top_custom;
+    } else {
+      str = make_anchor(pkg.title);
+      if (travis) {
+        str += "-";
+      }
     }
     return result = "\[[Back To Top]\](" + str + ")";
   };
@@ -170,7 +174,7 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, "\n");
   };
   generate_title = function(opts) {
-    var desc, output, pkg, title, tra, travis, username;
+    var branch, desc, output, pkg, title, tra, travis, username;
 
     if (opts.informative) {
       inform("Writing package name and description");
@@ -178,15 +182,16 @@ module.exports = function(grunt) {
     output = opts.output;
     travis = opts.has_travis;
     username = opts.github_username;
-    pkg = get_package_info(opts);
-    title = pkg.name;
+    pkg = opts.pkg;
+    title = pkg.title;
     desc = pkg.description;
+    branch = opts.travis_branch;
     fs.appendFileSync(output, "# " + title + " ");
     if (travis) {
       if (opts.informative) {
         inform("Engineering travis button");
       }
-      tra = "[![Build Status](https://secure.travis-ci.org/" + username + "/" + title + ".png?branch=master)](http://travis-ci.org/" + username + "/" + title + ")";
+      tra = "[![Build Status](https://secure.travis-ci.org/" + username + "/" + title + ".png?branch=" + branch + ")](http://travis-ci.org/" + username + "/" + title + ")";
       fs.appendFileSync(output, "" + tra);
     }
     return fs.appendFileSync(output, "\n\n> " + desc + "\n\n");
@@ -251,7 +256,7 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, str);
   };
   return grunt.registerMultiTask("readme_generator", "Generate Readme File", function() {
-    var changelog_inserted, file, files, options, title;
+    var changelog_inserted, file, files, options, pkg, title;
 
     options = this.options({
       readme_folder: "readme",
@@ -277,6 +282,8 @@ module.exports = function(grunt) {
       back_to_top_custom: null
     });
     grunt.file.write(options.output, "");
+    pkg = get_package_info(options);
+    options.pkg = pkg;
     files = this.data.order;
     if (options.banner != null) {
       generate_banner(options);
