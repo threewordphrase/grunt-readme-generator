@@ -9,3 +9,4 @@ test/readme_no_footer.md
 test/readme_no_changelog.md
 test/default_options.md
 test/testing_anomallies.md
+*.sublime-*
