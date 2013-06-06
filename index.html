@@ -20,7 +20,7 @@
     <header>
       <div class="inner">
         <h1>Grunt-readme-generator</h1>
-        <h2>A grunt task to generate a dynamic readme.md from partial markdown files in readme folder.</h2>
+        <h2>A grunt task to generate a dynamic readme.md from partial markdown files in readme folder. Specifically designed for GitHub projects!</h2>
         <a href="https://github.com/aponxi/grunt-readme-generator" class="button"><small>View project on</small>GitHub</a>
       </div>
     </header>
@@ -53,10 +53,11 @@
 </code></pre>
 
 <h1>
-<a name="grunt-readme-generator" class="anchor" href="#grunt-readme-generator"><span class="octicon octicon-link"></span></a>Grunt ReadMe Generator</h1>
+<a name="grunt-readme-generator-" class="anchor" href="#grunt-readme-generator-"><span class="octicon octicon-link"></span></a>grunt-readme-generator <a href="http://travis-ci.org/aponxi/grunt-readme-generator"><img src="https://secure.travis-ci.org/aponxi/grunt-readme-generator.png?branch=master" alt="Build Status"></a>
+</h1>
 
 <blockquote>
-<p>A grunt task to generate a dynamic readme.md from partial markdown files in readme folder.</p>
+<p>A grunt task to generate a dynamic readme.md from partial markdown files in readme folder. Specifically designed for GitHub projects!</p>
 </blockquote>
 
 <h2>
@@ -73,9 +74,47 @@
 </ul><h2>
 <a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
 
-<p><a href="#grunt-readme-generator">[Back To Top]</a></p>
+<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
 
-<p>This plugin requires Grunt <code>~0.4.1</code></p>
+<p>This plugin is to generate readme files from many tiny sections of the readme. The readme you are reading is also generated with this plugin!</p>
+
+<p>Lets say you have a readme structure such as:</p>
+
+<pre><code>- Installation
+- Usage
+    -- Example
+    -- Example Output
+- Documentation
+    -- Options
+        --- option1
+        --- option2
+    -- API
+- License
+- Contributing
+</code></pre>
+
+<ul>
+<li>You can write a task to generate <code>Options.md</code> from <code>option1.md</code> and <code>option2.md</code>
+</li>
+<li>Then a task to generate <code>Documentation.md</code> from <code>Options.md</code> and <code>API.md</code>
+</li>
+<li>Another task to generate <code>Usage.md</code> from <code>Example.md</code> and <code>Example Output.md</code> files</li>
+<li>And wrap it all up by creating the <code>Readme.md</code> from <code>Installation.md</code>, <code>Usage.md</code>, <code>Documentation.md</code>, <code>License.md</code> and <code>Contributing.md</code>
+</li>
+<li>voilà !</li>
+</ul><h3>
+<a name="highlights" class="anchor" href="#highlights"><span class="octicon octicon-link"></span></a>Highlights</h3>
+
+<ul>
+<li>Automatic table of contents generation</li>
+<li>Automatic <code>Back To Top</code> link generation</li>
+<li>Highly customizable for many many parts of the bigger picture</li>
+<li>Automatic Title and Description generation on the top</li>
+<li>Option to generate travis build status image on the top for desired branch</li>
+<li>Specifically designed for GitHub projects and <a href="https://help.github.com/articles/github-flavored-markdown">GFM</a>
+</li>
+<li>Optional banners on the top to put a logo or ascii art!</li>
+</ul><p>This plugin requires Grunt <code>~0.4.1</code></p>
 
 <p>If you haven't used <a href="http://gruntjs.com/">Grunt</a> before, be sure to check out the <a href="http://gruntjs.com/getting-started">Getting Started</a> guide, as it explains how to create a <a href="http://gruntjs.com/sample-gruntfile">Gruntfile</a> as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:</p>
 
@@ -90,7 +129,7 @@
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-<p><a href="#grunt-readme-generator">[Back To Top]</a></p>
+<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
 
 <p>In your project's Gruntfile, add a section named <code>readme_generator</code> to the data object passed into <code>grunt.initConfig()</code>.</p>
 
@@ -100,26 +139,32 @@
     <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
       <span class="c1">// Task-specific options go here.</span>
       <span class="c1">// detailed explanation is under options</span>
+      <span class="c1">// Default options:</span>
       <span class="nx">readme_folder</span><span class="o">:</span> <span class="s2">"readme"</span><span class="p">,</span>
       <span class="nx">output</span><span class="o">:</span> <span class="s2">"README.md"</span><span class="p">,</span>
       <span class="nx">table_of_contents</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
       <span class="nx">toc_extra_links</span><span class="o">:</span> <span class="p">[],</span>
       <span class="nx">generate_changelog</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
       <span class="nx">changelog_folder</span><span class="o">:</span> <span class="s2">"changelogs"</span><span class="p">,</span>
-      <span class="nx">changelog_version_prefix</span><span class="o">:</span> <span class="s2">""</span><span class="p">,</span>
-      <span class="nx">changelog_insert_before</span><span class="o">:</span> <span class="s2">""</span><span class="p">,</span>
+      <span class="nx">changelog_version_prefix</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nx">changelog_insert_before</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nx">banner</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nx">has_travis</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
       <span class="nx">github_username</span><span class="o">:</span> <span class="s2">"aponxi"</span><span class="p">,</span>
+      <span class="nx">travis_branch</span><span class="o">:</span> <span class="s2">"master"</span><span class="p">,</span>
       <span class="nx">generate_footer</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
       <span class="nx">generate_title</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">package_name</span><span class="o">:</span> <span class="s2">""</span><span class="p">,</span>
-      <span class="nx">package_desc</span><span class="o">:</span> <span class="s2">""</span><span class="p">,</span>
-      <span class="nx">informative</span><span class="o">:</span> <span class="kc">true</span>
+      <span class="nx">package_title</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nx">package_name</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nx">package_desc</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nx">informative</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nx">h1</span><span class="o">:</span> <span class="s2">"#"</span><span class="p">,</span>
+      <span class="nx">h2</span><span class="o">:</span> <span class="s2">"##"</span><span class="p">,</span>
+      <span class="nx">back_to_top_custom</span><span class="o">:</span> <span class="kc">null</span>
     <span class="p">},</span>
     <span class="nx">order</span><span class="o">:</span> <span class="p">{</span>
       <span class="c1">// Title of the piece and the File name goes here</span>
-      <span class="c1">// like so</span>
+      <span class="c1">// "Filename" : "Title"</span>
       <span class="s2">"installation.md"</span><span class="o">:</span> <span class="s2">"Installation"</span><span class="p">,</span>
       <span class="s2">"usage.md"</span><span class="o">:</span> <span class="s2">"Usage"</span><span class="p">,</span>
       <span class="s2">"options.md"</span><span class="o">:</span> <span class="s2">"Options"</span><span class="p">,</span>
@@ -143,7 +188,7 @@
 <h2>
 <a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h2>
 
-<p><a href="#grunt-readme-generator">[Back To Top]</a></p>
+<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
 
 <h3>
 <a name="notes-on-the-features" class="anchor" href="#notes-on-the-features"><span class="octicon octicon-link"></span></a>Notes on the features</h3>
@@ -264,7 +309,7 @@
 <ul>
 <li>As I've mentioned above, this is a rule for targeting only prefixed changelogs.</li>
 <li>If you have <code>_2.4.3.md</code> in there for some reason and other changelogs as <code>v2.4.2.md</code>, <code>v2.4.3.md</code> you could easily include only those two files by setting prefix to <code>"v"</code>. It would only look for files that start with <code>v</code> and sort from those.</li>
-</ul><div class="highlight"><pre><span class="nv">changelog_version_prefix: </span><span class="s">""</span> 
+</ul><div class="highlight"><pre><span class="nv">changelog_version_prefix: </span><span class="kc">null</span> 
 </pre></div>
 
 <h4>
@@ -282,7 +327,7 @@
 <li>This is separate than the <code>order</code> object you set for the task because changelog is automatically generated</li>
 <li>Examples for this can be any file from the <code>order</code> list. For this readme I could have chosen <code>getting_started.md</code> or <code>usage.md</code> as well... But it would have been very silly.</li>
 <li>Default is:</li>
-</ul><div class="highlight"><pre><span class="nv">changelog_insert_before: </span><span class="s">""</span> 
+</ul><div class="highlight"><pre><span class="nv">changelog_insert_before: </span><span class="kc">null</span> 
 </pre></div>
 
 <h4>
@@ -334,6 +379,22 @@
 </pre></div>
 
 <h4>
+<a name="travis_branch" class="anchor" href="#travis_branch"><span class="octicon octicon-link"></span></a>travis_branch</h4>
+
+<blockquote>
+<p>this specifies the travis branch that you want to use for the build status logo</p>
+</blockquote>
+
+<ul>
+<li>If you want to use develop branch for your travis build status logo then set it to <code>"develop"
+</code>
+</li>
+<li><p>This only works if you have <code>generate_title</code> and <code>has_travis</code> turned <code>on</code></p></li>
+<li><p>By default:</p></li>
+</ul><div class="highlight"><pre><span class="nv">travis_branch : </span><span class="s">"master"</span>
+</pre></div>
+
+<h4>
 <a name="generate_footer" class="anchor" href="#generate_footer"><span class="octicon octicon-link"></span></a>generate_footer</h4>
 
 <blockquote>
@@ -375,6 +436,18 @@
 </pre></div>
 
 <h4>
+<a name="package_title" class="anchor" href="#package_title"><span class="octicon octicon-link"></span></a>package_title</h4>
+
+<blockquote>
+<p>This can be different than the package name, this will be on the title of the readme and used for anchor purposes to go back to the top</p>
+</blockquote>
+
+<ul>
+<li>This overrides <code>package_name</code> option for title.</li>
+<li>Allows you to customize your Readme title</li>
+<li>For example instead of <code>grunt-readme-generator</code> I could say <code>Readme Generator</code>
+</li>
+</ul><h4>
 <a name="package_name" class="anchor" href="#package_name"><span class="octicon octicon-link"></span></a>package_name</h4>
 
 <blockquote>
@@ -384,6 +457,7 @@
 <ul>
 <li>
 <code>Back to top</code> links from <code>Table of Contents</code> uses this to generate anchors that link to the title, thus allowing to jump to the top of the page.</li>
+<li>While generating the travis image, we use package name</li>
 <li>
 <code>Generate title</code> also uses this to generate the title</li>
 <li>This option accepts a string such as <code>"My Plugin Title"</code>
@@ -396,7 +470,7 @@
 
 <ul>
 <li>Default value:</li>
-</ul><div class="highlight"><pre><span class="nv">package_name : </span><span class="s">""</span> 
+</ul><div class="highlight"><pre><span class="nv">package_name : </span><span class="kc">null</span> 
 </pre></div>
 
 <h4>
@@ -420,7 +494,7 @@
 
 <ul>
 <li>Default value:</li>
-</ul><div class="highlight"><pre><span class="nv">package_desc : </span><span class="s">""</span> 
+</ul><div class="highlight"><pre><span class="nv">package_desc : </span><span class="kc">null</span> 
 </pre></div>
 
 <h4>
@@ -448,10 +522,58 @@
 Your readme file "test/readme_no_changelog.md" is ready!
 </code></pre>
 
+<h4>
+<a name="h1" class="anchor" href="#h1"><span class="octicon octicon-link"></span></a>h1</h4>
+
+<blockquote>
+<p>for the auto generated title of the readme</p>
+</blockquote>
+
+<ul>
+<li>If you are generating a documentation from many different markdown files then you would probably want the big titles be <code>### option group</code> and smaller titles be <code>#### option</code> and when you are generating the whole readme from another grunt task then you would want the title of the many option groups to be <code>##Options</code>
+</li>
+<li>By setting this option to <code>###</code> you can make the titles of the markdown files to be <code>### title</code>
+</li>
+<li>Be sure to set <code>h2</code> option to <code>####</code> for that case, so that sub-titles will appear nicely.</li>
+<li>By default:</li>
+</ul><div class="highlight"><pre><span class="nv">h1 : </span><span class="s">"</span><span class="err">#</span><span class="s">"</span>
+</pre></div>
+
+<h4>
+<a name="h2" class="anchor" href="#h2"><span class="octicon octicon-link"></span></a>h2</h4>
+
+<blockquote>
+<p>for the auto generated title of the section, like usage or legal or installation parts of the readme</p>
+</blockquote>
+
+<ul>
+<li>Similar to the <code>h1</code> option, set this to make the sub-titles appear differently</li>
+<li>Usually used with <code>h1</code> option</li>
+<li>By default:</li>
+</ul><div class="highlight"><pre><span class="nv">h2 : </span><span class="s">"</span><span class="err">##</span><span class="s">"</span>
+</pre></div>
+
+<h4>
+<a name="back_to_top_custom" class="anchor" href="#back_to_top_custom"><span class="octicon octicon-link"></span></a>back_to_top_custom</h4>
+
+<blockquote>
+<p>where backtotop leads you, by default it takes you to the title of the readme</p>
+</blockquote>
+
+<ul>
+<li>This is used with <code>table_of_contents</code> option</li>
+<li>Normally, it would take you to the title of the readme page. This is to override that.</li>
+<li>If you want to change that for whatever reason, set it to the exact link you want to provide</li>
+<li>for example <code>back_to_top_custom : "#my-custom-anchor-in-the-readme-page"</code>
+</li>
+<li>By default:</li>
+</ul><div class="highlight"><pre><span class="nv">back_to_top_custom : </span><span class="kc">null</span>
+</pre></div>
+
 <h2>
 <a name="release-history" class="anchor" href="#release-history"><span class="octicon octicon-link"></span></a>Release History</h2>
 
-<p><a href="#grunt-readme-generator">[Back To Top]</a></p>
+<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
 
 <p>You can find <a href="/changelogs">all the changelogs here</a>.</p>
 
@@ -459,12 +581,24 @@ Your readme file "test/readme_no_changelog.md" is ready!
 <a name="latest-changelog-is-for-v020md" class="anchor" href="#latest-changelog-is-for-v020md"><span class="octicon octicon-link"></span></a>Latest changelog is for <a href="/changelogs/v0.2.0.md">v0.2.0.md</a>:</h3>
 
 <h4>
-<a name="v020-05jun2013" class="anchor" href="#v020-05jun2013"><span class="octicon octicon-link"></span></a>v0.2.0 05/Jun/2013</h4>
+<a name="v0232-06jun2013" class="anchor" href="#v0232-06jun2013"><span class="octicon octicon-link"></span></a>v0.2.32 06/Jun/2013</h4>
 
 <ul>
-<li>Wrote the documentation</li>
-<li>Fixed some more issues with prefix check. Now if there isn't a prefix, it sorts the files under changelog alphabetically. z0.1.0.md, and v0.1.0.md are both included in the sorting process.</li>
-<li>changed some default options to more convenient values</li>
+<li>fixed typos</li>
+<li>grunt support added for travis</li>
+</ul><h4>
+<a name="v023-06jun2013" class="anchor" href="#v023-06jun2013"><span class="octicon octicon-link"></span></a>v0.2.3 06/Jun/2013</h4>
+
+<ul>
+<li>Check null checks and empty strings for option failsafe</li>
+<li>Get the package info once #7</li>
+<li>add these new options
+-- travis_branch #3
+-- package_title
+-- h1 #5
+-- h2 #5
+-- back_to_top_custom</li>
+<li>Latest changelog is <code>h2 + #</code>. So if h2 is <code>##</code>, then it is <code>###Latest Changelog</code>. Because <code>##</code> would be Release history title and latest changelog is its sub-title.</li>
 </ul><h4>
 <a name="v022-05jun2013" class="anchor" href="#v022-05jun2013"><span class="octicon octicon-link"></span></a>v0.2.2 05/Jun/2013</h4>
 
@@ -472,16 +606,26 @@ Your readme file "test/readme_no_changelog.md" is ready!
 <li>Minor typo fixes</li>
 <li>added keywords to package</li>
 <li>released the package</li>
+</ul><h4>
+<a name="v020-05jun2013" class="anchor" href="#v020-05jun2013"><span class="octicon octicon-link"></span></a>v0.2.0 05/Jun/2013</h4>
+
+<ul>
+<li>Wrote the documentation</li>
+<li>Fixed some more issues with prefix check. Now if there isn't a prefix, it sorts the files under changelog alphabetically. z0.1.0.md, and v0.1.0.md are both included in the sorting process.</li>
+<li>changed some default options to more convenient values</li>
+<li>updated docs</li>
+<li>added more tests</li>
+<li>updated keywords and package desc.</li>
 </ul><h2>
 <a name="legal-mambo-jambo" class="anchor" href="#legal-mambo-jambo"><span class="octicon octicon-link"></span></a>Legal Mambo Jambo</h2>
 
-<p><a href="#grunt-readme-generator">[Back To Top]</a></p>
+<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
 
 <p>Copyright © 2013 aponxi <a href="mailto:aponxi@weaponxi.com">aponxi@weaponxi.com</a></p>
 
 <p>This software is licensed under <a href="http://aponxi.mit-license.org/">MIT License</a>.</p>
 
-<hr><p><em>This readme has been automatically generated by <a href="https://github.com/aponxi/grunt-readme-generator">readme generator</a> on Wed Jun 05 2013 20:47:50 GMT-0400 (EDT).</em></p>
+<hr><p><em>This readme has been automatically generated by <a href="https://github.com/aponxi/grunt-readme-generator">readme generator</a> on Thu Jun 06 2013 17:51:02 GMT-0400 (EDT).</em></p>
         </section>
 
         <aside id="sidebar">
