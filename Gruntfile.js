@@ -188,7 +188,7 @@
           changelog_version_prefix: "v",
           changelog_insert_before: "legal.md",
           banner: "banner.md",
-          has_travis: false,
+          has_travis: true,
           github_username: "",
           generate_footer: true,
           generate_title: true,

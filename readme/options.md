@@ -95,7 +95,7 @@ changelog_folder: "changelogs"
 - If you have `_2.4.3.md` in there for some reason and other changelogs as `v2.4.2.md`, `v2.4.3.md` you could easily include only those two files by setting prefix to `"v"`. It would only look for files that start with `v` and sort from those.
 
 ```coffee
-changelog_version_prefix: "" 
+changelog_version_prefix: null 
 ```
 
 #### changelog_insert_before
@@ -108,7 +108,7 @@ changelog_version_prefix: ""
 - Default is:
 
 ```coffee
-changelog_insert_before: "" 
+changelog_insert_before: null 
 ```
 
 #### banner
@@ -148,6 +148,19 @@ has_travis: on
 github_username: "aponxi" 
 ```
 
+#### travis_branch
+> this specifies the travis branch that you want to use for the build status logo
+
+- If you want to use develop branch for your travis build status logo then set it to `"develop"
+`
+- This only works if you have `generate_title` and `has_travis` turned `on`
+
+- By default:
+
+```coffee
+travis_branch : "master"
+```
+
 #### generate_footer
 > generates automatic footer that tells the time it was generated using this task
 
@@ -184,10 +197,18 @@ grunt.initConfig({
 generate_title: on 
 ```
 
+#### package_title
+> This can be different than the package name, this will be on the title of the readme and used for anchor purposes to go back to the top
+
+- This overrides `package_name` option for title.
+- Allows you to customize your Readme title
+- For example instead of `grunt-readme-generator` I could say `Readme Generator`
+
 #### package_name
 > by default we get it from the package.json
 
 - `Back to top` links from `Table of Contents` uses this to generate anchors that link to the title, thus allowing to jump to the top of the page.
+- While generating the travis image, we use package name
 - `Generate title` also uses this to generate the title
 - This option accepts a string such as `"My Plugin Title"`
 - By default it is empty, allowing the pacakge name to be gotten from package.json. To have it get it from package.json you must  add this line under `grunt.initConfig` in your Gruntfile: 
@@ -201,7 +222,7 @@ grunt.initConfig({
 - Default value:
 
 ```coffee
-package_name : "" 
+package_name : null 
 ```
 #### package_desc
 > by default we get it from package.json
@@ -220,7 +241,7 @@ grunt.initConfig({
 - Default value:
 
 ```coffee
-package_desc : "" 
+package_desc : null 
 ```
 
 #### informative
@@ -244,4 +265,40 @@ informative : yes
 >> Generating table of contents...
 >> Adding the generation message, thank you...
 Your readme file "test/readme_no_changelog.md" is ready!
+```
+
+#### h1
+> for the auto generated title of the readme
+
+- If you are generating a documentation from many different markdown files then you would probably want the big titles be `### option group` and smaller titles be `#### option` and when you are generating the whole readme from another grunt task then you would want the title of the many option groups to be `##Options`
+- By setting this option to `###` you can make the titles of the markdown files to be `### title`
+- Be sure to set `h2` option to `####` for that case, so that sub-titles will appear nicely.
+- By default:
+
+```coffee
+h1 : "#"
+```
+
+#### h2
+> for the auto generated title of the section, like usage or legal or installation parts of the readme
+
+- Similar to the `h1` option, set this to make the sub-titles appear differently
+- Usually used with `h1` option
+- By default:
+
+```coffee
+h2 : "##"
+```
+
+#### back_to_top_custom
+> where backtotop leads you, by default it takes you to the title of the readme
+
+- This is used with `table_of_contents` option
+- Normally, it would take you to the title of the readme page. This is to override that.
+- If you want to change that for whatever reason, set it to the exact link you want to provide
+- for example `back_to_top_custom : "#my-custom-anchor-in-the-readme-page"`
+- By default:
+
+```coffee
+back_to_top_custom : null
 ```

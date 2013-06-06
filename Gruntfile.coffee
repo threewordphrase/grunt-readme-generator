@@ -223,7 +223,7 @@ module.exports = (grunt) ->
 
           banner: "banner.md"
 
-          has_travis: off
+          has_travis: yes
           github_username: ""
 
           generate_footer: on
