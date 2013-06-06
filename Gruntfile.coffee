@@ -21,13 +21,52 @@ module.exports = (grunt) ->
         "test/readme_no_travis.md"
         "test/readme_no_footer.md"
         "test/readme_no_changelog.md"
+        "test/default_options.md"
+        "test/testing_anomallies.md"
       ]
 
     
     # Configuration to be run (and then tested).
     readme_generator:
+      default_options:
+        options:
+          output: "test/default_options.md"
+          readme_folder: "test/readme"
+          changelog_folder: "test/changelogs"
+        order:
+          "installation.md" : "Installation"
+          "usage.md" :"Usage"
+          "options.md" :"Options"
+          "example.md":"Example"
+          "output.md":"Example Output"
+          "building-and-testing.md":"Building and Testing"
+          "legal.md" : "Legal Mambo Jambo"
+      testing_anomallies:
+        options:
+          generate_changelog: on
+          has_travis: on
+          output: "test/testing_anomallies.md"
+          table_of_contents: on
+          readme_folder: "test/readme"
+          changelog_folder: "test/changelogs"
+          changelog_version_prefix: ""
+          toc_extra_links: [
+            "[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)"
+            "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"
+          ]
+          banner: "banner.md"
+
+        order:
+          "installation.md" : "Installation"
+          "usage.md" :"Usage"
+          "options.md" :"Options"
+          "example.md":"Example"
+          "output.md":"Example Output"
+          "building-and-testing.md":"Building and Testing"
+          "legal.md" : "Legal Mambo Jambo"
       no_toc:
         options:
+          generate_changelog: on 
           has_travis: on
           output: "test/readme_no_toc.md"
           table_of_contents: off
@@ -50,6 +89,7 @@ module.exports = (grunt) ->
           "legal.md" : "Legal Mambo Jambo"
       all_options:
         options:
+          generate_changelog: on 
           has_travis: on
           output: "test/readme_all_options.md"
           table_of_contents: on
@@ -72,6 +112,7 @@ module.exports = (grunt) ->
           "legal.md" : "Legal Mambo Jambo"
       no_travis:
         options:
+          generate_changelog: on 
           has_travis: off
           output: "test/readme_no_travis.md"
           table_of_contents: on
@@ -94,6 +135,7 @@ module.exports = (grunt) ->
           "legal.md" : "Legal Mambo Jambo"
       no_footer:
         options:
+          generate_changelog: on 
           has_travis: on
           output: "test/readme_no_footer.md"
           table_of_contents: on
@@ -188,6 +230,8 @@ module.exports = (grunt) ->
     "readme_generator:no_travis"
     "readme_generator:no_footer"
     "readme_generator:no_release_history"
+    "readme_generator:default_options"
+    "readme_generator:testing_anomallies"
   ]
 
   grunt.registerTask "build", [

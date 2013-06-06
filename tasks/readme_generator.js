@@ -88,8 +88,16 @@ module.exports = function(grunt) {
     files = fs.readdirSync(changelog_folder);
     for (_i = 0, _len = files.length; _i < _len; _i++) {
       filename = files[_i];
-      if (filename.substring(0, prefix.length) === prefix && grunt.file.isFile(changelog_folder + "/" + filename) && is_valid_extention(filename)) {
-        versions_found.push(filename);
+      if (grunt.file.isFile(changelog_folder + "/" + filename) && is_valid_extention(filename)) {
+        if (prefix.length > 0) {
+          if (filename.substring(0, prefix.length) === prefix) {
+            versions_found.push(filename);
+          }
+          console.log("there is a prefix " + prefix);
+        } else {
+          console.log("there isnt a prefix " + prefix);
+          versions_found.push(filename);
+        }
       }
     }
     if (versions_found.length > 0) {
@@ -244,10 +252,10 @@ module.exports = function(grunt) {
       output: "README.md",
       table_of_contents: true,
       toc_extra_links: [],
-      generate_changelog: true,
+      generate_changelog: false,
       changelog_folder: "changelogs",
-      changelog_version_prefix: "v",
-      changelog_insert_before: "legal.md",
+      changelog_version_prefix: "",
+      changelog_insert_before: "",
       banner: null,
       has_travis: true,
       github_username: "aponxi",

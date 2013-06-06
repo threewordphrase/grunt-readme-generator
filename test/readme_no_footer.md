@@ -35,6 +35,7 @@
 * [Example Output](#example-output)
 * [Building and Testing](#building-and-testing)
 * [Legal Mambo Jambo](#legal-mambo-jambo)
+* [Release History](#release-history)
 * [Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)
 * [Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)
 
@@ -129,6 +130,13 @@ Available commands are:
 - `grunt test`  (Aliases: `grunt`; `npm test`): 
   This is for unit testing. 
 
+## Legal Mambo Jambo
+[[Back To Top]](#grunt-readme-generator-)
+
+Copyright © 2013 aponxi <aponxi@weaponxi.com>
+
+This software is licensed under [MIT License](http://aponxi.mit-license.org/).
+
 ## Release History
 [[Back To Top]](#grunt-readme-generator)
 
@@ -137,18 +145,11 @@ You can find [all the changelogs here](/test/changelogs).
 ### Latest changelog is for [v0.1.0.md](/test/changelogs/v0.1.0.md):
 
 #### v0.1.0 05/Jun/2013
-- Updated package.json, bumped up version.
+- V Prefix
 
 #### v0.1.01 05/Jun/2013
 - Added utf-8 encode/decode to prevent unicode decode errors, fixed #17
 - Corrected years in 0.6 changelog... Should get used to it by now.
 - Added error output in panel which fixes #16
 
-
-## Legal Mambo Jambo
-[[Back To Top]](#grunt-readme-generator-)
-
-Copyright © 2013 aponxi <aponxi@weaponxi.com>
-
-This software is licensed under [MIT License](http://aponxi.mit-license.org/).
 

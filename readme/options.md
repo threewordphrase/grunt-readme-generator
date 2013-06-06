@@ -70,10 +70,10 @@ toc_extra_links: []
 - Usually files are named such as `0.1.2.md`, `0.11.0.markdown`, `1.0.0.mdown` etc
 - This feature is either `on` or `off` (true/false for javascript)
 - *Important:* If this feature is on, then you must have some changelog files under your changelog folder
-- By default it is `on`:
+- By default it is `off`:
 
 ```coffee
-generate_changelog: on 
+generate_changelog: off 
 ```
 
 #### changelog_folder
@@ -95,7 +95,7 @@ changelog_folder: "changelogs"
 - If you have `_2.4.3.md` in there for some reason and other changelogs as `v2.4.2.md`, `v2.4.3.md` you could easily include only those two files by setting prefix to `"v"`. It would only look for files that start with `v` and sort from those.
 
 ```coffee
-changelog_version_prefix: "v" 
+changelog_version_prefix: "" 
 ```
 
 #### changelog_insert_before
@@ -108,7 +108,7 @@ changelog_version_prefix: "v"
 - Default is:
 
 ```coffee
-changelog_insert_before: "legal.md" 
+changelog_insert_before: "" 
 ```
 
 #### banner

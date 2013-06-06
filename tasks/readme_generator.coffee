@@ -82,9 +82,18 @@ module.exports = (grunt) ->
       # console.log filename.substring(0,prefix.length) is prefix
       # console.log grunt.file.isFile(changelog_folder+"/"+filename)
 
-      if filename.substring(0,prefix.length) is prefix and grunt.file.isFile(changelog_folder+"/"+filename) and is_valid_extention filename
-
-        versions_found.push filename
+      if grunt.file.isFile(changelog_folder+"/"+filename) and is_valid_extention filename
+        # what if we aren't using prefixes?
+        # check if we are using prefixes, if so act accordingly
+        if prefix.length > 0 
+          if filename.substring(0,prefix.length) is prefix 
+            versions_found.push filename
+          console.log "there is a prefix #{prefix}"
+        else
+          # else just push it anyways
+          console.log "there isnt a prefix #{prefix}"
+          versions_found.push filename
+        
     
     if versions_found.length > 0
       versions_found.sort()
@@ -244,13 +253,13 @@ module.exports = (grunt) ->
       toc_extra_links: [] 
 
       # generates automatic changelog
-      generate_changelog: on 
+      generate_changelog: off 
       # where changelog files are located
       changelog_folder: "changelogs" 
       # under changelog folder, there are files like v0.1.0.md if the prefix is "V"
-      changelog_version_prefix: "v" 
+      changelog_version_prefix: "" 
       # I like my legal stuff at the bottom of the readme and release history before that
-      changelog_insert_before: "legal.md" 
+      changelog_insert_before: "" 
       
       # I like some ascii art on the top of the readme
       banner: null 
