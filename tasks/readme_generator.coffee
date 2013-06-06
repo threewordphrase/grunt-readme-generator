@@ -4,10 +4,10 @@
 # *
 # * Copyright (c) 2013 Logan Howlett
 # * Licensed under the MIT license.
-# 
+#
 "use strict"
 fs = require 'fs'
-module.exports = (grunt) ->  
+module.exports = (grunt) ->
   # helper functions
 
   # helps with debug messages
@@ -85,20 +85,20 @@ module.exports = (grunt) ->
       if grunt.file.isFile(changelog_folder+"/"+filename) and is_valid_extention filename
         # what if we aren't using prefixes?
         # check if we are using prefixes, if so act accordingly
-        if prefix.length > 0 
-          if filename.substring(0,prefix.length) is prefix 
+        if prefix.length > 0
+          if filename.substring(0,prefix.length) is prefix
             versions_found.push filename
           console.log "there is a prefix #{prefix}"
         else
           # else just push it anyways
           console.log "there isnt a prefix #{prefix}"
           versions_found.push filename
-        
-    
+      
+  
     if versions_found.length > 0
       versions_found.sort()
       latest = versions_found[versions_found.length - 1]
-      
+    
       # returns the whole file name like v0.1.1.md
       latest
     else
@@ -108,13 +108,13 @@ module.exports = (grunt) ->
 
   generate_banner = (opts) ->
     if opts.informative then inform "Generating banner"
-    
+  
     path = opts.readme_folder
     banner_file = opts.banner
     output = opts.output
 
     f = path+"/"+banner_file
-    
+  
     unless grunt.file.exists f
       grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
@@ -132,7 +132,7 @@ module.exports = (grunt) ->
     # console.dir files
     changelog_inserted = no
     for file, title of files
-    
+  
       if file is changelog_insert_before and opts.generate_changelog
         changelog_inserted = yes
         # release history is generated specially since the latest-changelog is generated dynamically.
@@ -145,7 +145,7 @@ module.exports = (grunt) ->
       else
         link = make_anchor title
         fs.appendFileSync output, "* [#{title}](#{link})\n"
-    
+  
     # what if changelog wasn't inserted?
     if opts.generate_changelog and changelog_inserted is false
       # lets insert it at the end
@@ -156,9 +156,9 @@ module.exports = (grunt) ->
       for i in toc_extra_links
         ex = i
         fs.appendFileSync output, "* #{ex}\n"
-    
+  
     fs.appendFileSync output, "\n"
-      
+    
   generate_title = (opts) ->
     if opts.informative then inform "Writing package name and description"
     output = opts.output
@@ -167,15 +167,15 @@ module.exports = (grunt) ->
     pkg = get_package_info opts
     title = pkg.name
     desc = pkg.description
-    
+  
     fs.appendFileSync output, "# #{title} "
 
     if travis
       if opts.informative then inform "Engineering travis button"
-      
+    
       tra = "[![Build Status](https://secure.travis-ci.org/#{username}/#{title}.png?branch=master)](http://travis-ci.org/#{username}/#{title})"
       fs.appendFileSync output, "#{tra}"
-    
+  
     fs.appendFileSync output, "\n\n> #{desc}\n\n"
 
   append = (opts, file, title) ->
@@ -188,15 +188,15 @@ module.exports = (grunt) ->
     if opts.table_of_contents
       top = back_to_top(opts)
       fs.appendFileSync output, "#{top}\n"
-    
+  
     fs.appendFileSync output, "\n"
 
     f = path+"/"+file
-    
+  
     unless grunt.file.exists f
       grunt.fail.fatal "Source file \"" + f + "\" not found."
     else
-      fs.appendFileSync output, grunt.file.read f 
+      fs.appendFileSync output, grunt.file.read f
       fs.appendFileSync output, "\n\n"
 
   generate_release_history = (opts) ->
@@ -216,7 +216,7 @@ module.exports = (grunt) ->
     latest_file = changelog_folder + "/" + latest
 
     # let's get the version number from file v0.1.2.md, we just want 0.1.2
-    
+  
     latest_extension = get_file_extension latest
     # lets say extension is .md
     # then we omit `md` (latest_extension.length) then `.` (-1)
@@ -226,7 +226,7 @@ module.exports = (grunt) ->
     unless grunt.file.exists latest_file
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
-      fs.appendFileSync output, grunt.file.read latest_file 
+      fs.appendFileSync output, grunt.file.read latest_file
       fs.appendFileSync output, "\n\n"
 
 
@@ -239,48 +239,48 @@ module.exports = (grunt) ->
 
 
   grunt.registerMultiTask "readme_generator", "Generate Readme File", ->
-    
+  
     # Merge task-specific and/or target-specific options with these defaults.
     options = @options(
       # the folder where readme partial files are located
-      readme_folder: "readme" 
+      readme_folder: "readme"
       # where readme file should be generated in respect to Gruntfile location
-      output: "README.md" 
+      output: "README.md"
 
       # generate table of contents
       table_of_contents: on
       # Sometimes I like adding quicklinks on the top in table of contents. Table of contents (TOC) must be enabled for this option to matter
-      toc_extra_links: [] 
+      toc_extra_links: []
 
       # generates automatic changelog
-      generate_changelog: off 
+      generate_changelog: off
       # where changelog files are located
-      changelog_folder: "changelogs" 
+      changelog_folder: "changelogs"
       # under changelog folder, there are files like v0.1.0.md if the prefix is "V"
-      changelog_version_prefix: "" 
+      changelog_version_prefix: ""
       # I like my legal stuff at the bottom of the readme and release history before that
-      changelog_insert_before: "" 
-      
+      changelog_insert_before: ""
+    
       # I like some ascii art on the top of the readme
-      banner: null 
+      banner: null
 
       # I use travis a lot and want to have the travis image generated on the top
-      has_travis: on 
+      has_travis: on
       # this is mainly for travis link
-      github_username: "aponxi" 
+      github_username: "aponxi"
 
       # generates automatic footer that tells the time it was generated using this task
-      generate_footer: on 
-      
+      generate_footer: on
+    
       # generates automatic title from package name and description
-      generate_title: on 
+      generate_title: on
       # by default we get it from the package.json
-      package_name : "" 
+      package_name : ""
       # by default we get it from package.json
-      package_desc : "" 
-      
+      package_desc : ""
+    
       # tell the people what's going on (verbose)
-      informative : yes 
+      informative : yes
     )
     # lets clean up the output readme
     grunt.file.write options.output, ""
@@ -308,14 +308,14 @@ module.exports = (grunt) ->
         append options, file, title
       else
         append options, file, title
-      
+    
 
     # what if changelog wasn't inserted?
     if options.generate_changelog and changelog_inserted is false
       # lets insert it at the end
       generate_release_history options
 
-    # after writing all the contents 
+    # after writing all the contents
     # add footer
     if options.generate_footer then generate_footer options
 
