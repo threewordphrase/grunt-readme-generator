@@ -227,7 +227,7 @@ module.exports = (grunt) ->
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
       fs.appendFileSync output, grunt.file.read latest_file 
-      fs.appendFileSync output, "\n"
+      fs.appendFileSync output, "\n\n"
 
 
   generate_footer = (opts) ->
@@ -305,7 +305,10 @@ module.exports = (grunt) ->
         # add release history
         generate_release_history options
         changelog_inserted = yes
-      append options, file, title
+        append options, file, title
+      else
+        append options, file, title
+      
 
     # what if changelog wasn't inserted?
     if options.generate_changelog and changelog_inserted is false
