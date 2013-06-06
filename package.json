@@ -1,7 +1,7 @@
 {
   "name": "grunt-readme-generator",
   "description": "A grunt task to generate a dynamic readme.md from partial markdown files in readme folder. Specifically designed for GitHub projects!",
-  "version": "0.2.32",
+  "version": "0.2.33",
   "homepage": "https://github.com/aponxi/grunt-readme-generator",
   "author": {
     "name": "Logan Howlett",
