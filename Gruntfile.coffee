@@ -203,7 +203,7 @@ module.exports = (grunt) ->
           generate_footer: on
 
           generate_title: on
-          package_name : ""
+          package_name : "Grunt ReadMe Generator"
           package_desc : ""
 
           informative : yes

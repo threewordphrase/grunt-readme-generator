@@ -168,7 +168,7 @@
           github_username: "",
           generate_footer: true,
           generate_title: true,
-          package_name: "",
+          package_name: "Grunt ReadMe Generator",
           package_desc: "",
           informative: true
         },
