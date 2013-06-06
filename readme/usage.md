@@ -25,7 +25,7 @@ grunt.initConfig({
       informative: true
     },
     order: {
-      // Title of the piece and the file name goes here
+      // Title of the piece and the File name goes here
       // like so
       "installation.md": "Installation",
       "usage.md": "Usage",
@@ -43,3 +43,5 @@ grunt.initConfig({
 - It generates the readme by iterating through that array in the given order
 - In the example `"building-and-testing.md": "Building and Testing"` it is going to create a section called `Building and Testing`, making it a title; then it will read `building-and-testing.md` file from the readme directory set in `readme_folder` option and insert it after the title. 
 - Meaning that you shouldn't have titles in your seperate markdown files or in `building-and-testing.md` for the above example. They are automatically generated from the title.
+
+To test use `grunt test` command and look at the outputs under `test/` folder.
