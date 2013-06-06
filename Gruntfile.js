@@ -189,10 +189,10 @@
           changelog_insert_before: "legal.md",
           banner: "banner.md",
           has_travis: true,
-          github_username: "",
+          github_username: "aponxi",
           generate_footer: true,
           generate_title: true,
-          package_name: "Grunt ReadMe Generator",
+          package_name: "",
           package_desc: "",
           informative: true
         },

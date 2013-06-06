@@ -224,12 +224,12 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
           has_travis: yes
-          github_username: ""
+          github_username: "aponxi"
 
           generate_footer: on
 
           generate_title: on
-          package_name : "Grunt ReadMe Generator"
+          package_name : ""
           package_desc : ""
 
           informative : yes
