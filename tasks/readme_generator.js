@@ -11,8 +11,11 @@ module.exports = function(grunt) {
     return grunt.log.oklns(msg + "...");
   };
   get_package_info = function(opts) {
-    var desc, is_package_json_needed, name, package_info, pkg;
+    var desc, is_package_json_needed, name, package_info, pkg, title;
 
+    if (opts.informative) {
+      inform("Getting package info from options");
+    }
     is_package_json_needed = false;
     if ((opts.package_name != null) && opts.package_name.length > 0) {
       name = opts.package_name;
@@ -23,6 +26,9 @@ module.exports = function(grunt) {
       desc = opts.package_desc;
     } else {
       is_package_json_needed = true;
+    }
+    if (opts.informative) {
+      inform("Need to fill in the blanks from package.json");
     }
     if (is_package_json_needed) {
       pkg = grunt.config.get(['pkg']);
@@ -35,11 +41,26 @@ module.exports = function(grunt) {
         if (desc == null) {
           desc = pkg.description;
         }
+        if (opts.informative) {
+          inform("Got the necessary information from package.json");
+        }
+      }
+    }
+    if (opts.package_title != null) {
+      title = opts.package_title;
+      if (opts.informative) {
+        inform("Your custom title is being enhanced");
+      }
+    } else {
+      title = name;
+      if (opts.informative) {
+        inform("Your title is being generated from the package name");
       }
     }
     package_info = {
       name: name,
-      description: desc
+      description: desc,
+      title: title
     };
     return package_info;
   };
@@ -53,10 +74,14 @@ module.exports = function(grunt) {
     var pkg, result, str, travis;
 
     travis = opts.has_travis;
-    pkg = get_package_info(opts);
-    str = make_anchor(pkg.name);
-    if (travis) {
-      str += "-";
+    pkg = opts.pkg;
+    if (opts.back_to_top_custom != null) {
+      str = opts.back_to_top_custom;
+    } else {
+      str = make_anchor(pkg.title);
+      if (travis) {
+        str += "-";
+      }
     }
     return result = "\[[Back To Top]\](" + str + ")";
   };
@@ -80,7 +105,7 @@ module.exports = function(grunt) {
     var changelog_folder, filename, files, latest, prefix, versions_found, _i, _len;
 
     if (opts.informative) {
-      inform("Getting the latest changelog");
+      inform("Getting the latest changelog from the changelogs folder");
     }
     prefix = opts.changelog_version_prefix;
     changelog_folder = opts.changelog_folder;
@@ -93,9 +118,7 @@ module.exports = function(grunt) {
           if (filename.substring(0, prefix.length) === prefix) {
             versions_found.push(filename);
           }
-          console.log("there is a prefix " + prefix);
         } else {
-          console.log("there isnt a prefix " + prefix);
           versions_found.push(filename);
         }
       }
@@ -113,7 +136,7 @@ module.exports = function(grunt) {
     var banner_file, f, output, path;
 
     if (opts.informative) {
-      inform("Generating banner");
+      inform("Generating banner to place on the very top");
     }
     path = opts.readme_folder;
     banner_file = opts.banner;
@@ -127,15 +150,16 @@ module.exports = function(grunt) {
     }
   };
   generate_TOC = function(files, opts) {
-    var changelog_insert_before, changelog_inserted, ex, file, i, link, output, release_title, title, toc_extra_links, _i, _len;
+    var changelog_insert_before, changelog_inserted, ex, file, h2, i, link, output, release_title, title, toc_extra_links, _i, _len;
 
     if (opts.informative) {
-      inform("Generating table of contents");
+      inform("Generating table of contents, you won't get lost");
     }
     toc_extra_links = opts.toc_extra_links;
     changelog_insert_before = opts.changelog_insert_before;
     output = opts.output;
-    fs.appendFileSync(output, "## Jump to Section\n\n");
+    h2 = opts.h2;
+    fs.appendFileSync(output, "" + h2 + " Jump to Section\n\n");
     changelog_inserted = false;
     for (file in files) {
       title = files[file];
@@ -164,7 +188,7 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, "\n");
   };
   generate_title = function(opts) {
-    var desc, output, pkg, title, tra, travis, username;
+    var branch, desc, h1, output, pkg, pkg_name, title, tra, travis, username;
 
     if (opts.informative) {
       inform("Writing package name and description");
@@ -172,26 +196,30 @@ module.exports = function(grunt) {
     output = opts.output;
     travis = opts.has_travis;
     username = opts.github_username;
-    pkg = get_package_info(opts);
-    title = pkg.name;
+    pkg = opts.pkg;
+    title = pkg.title;
     desc = pkg.description;
-    fs.appendFileSync(output, "# " + title + " ");
+    branch = opts.travis_branch;
+    h1 = opts.h1;
+    pkg_name = pkg.name;
+    fs.appendFileSync(output, "" + h1 + " " + title + " ");
     if (travis) {
       if (opts.informative) {
         inform("Engineering travis button");
       }
-      tra = "[![Build Status](https://secure.travis-ci.org/" + username + "/" + title + ".png?branch=master)](http://travis-ci.org/" + username + "/" + title + ")";
+      tra = "[![Build Status](https://secure.travis-ci.org/" + username + "/" + pkg_name + ".png?branch=" + branch + ")](http://travis-ci.org/" + username + "/" + pkg_name + ")";
       fs.appendFileSync(output, "" + tra);
     }
     return fs.appendFileSync(output, "\n\n> " + desc + "\n\n");
   };
   append = function(opts, file, title) {
-    var f, output, path, top, travis;
+    var f, h2, output, path, top, travis;
 
     path = opts.readme_folder;
     travis = opts.has_travis;
     output = opts.output;
-    fs.appendFileSync(output, "## " + title + "\n");
+    h2 = opts.h2;
+    fs.appendFileSync(output, "" + h2 + " " + title + "\n");
     if (opts.table_of_contents) {
       top = back_to_top(opts);
       fs.appendFileSync(output, "" + top + "\n");
@@ -206,7 +234,7 @@ module.exports = function(grunt) {
     }
   };
   generate_release_history = function(opts) {
-    var changelog_folder, latest, latest_extension, latest_file, latest_version, output, prefix, top, travis;
+    var changelog_folder, h2, latest, latest_extension, latest_file, latest_version, output, prefix, top, travis;
 
     if (opts.informative) {
       inform("Digging the past for release information");
@@ -215,9 +243,10 @@ module.exports = function(grunt) {
     changelog_folder = opts.changelog_folder;
     travis = opts.has_travis;
     output = opts.output;
-    fs.appendFileSync(output, "## Release History\n");
+    h2 = opts.h2;
+    fs.appendFileSync(output, "" + h2 + " Release History\n");
     if (opts.table_of_contents) {
-      top = back_to_top(travis);
+      top = back_to_top(opts);
       fs.appendFileSync(output, "" + top + "\n");
     }
     fs.appendFileSync(output, "\nYou can find [all the changelogs here](/" + changelog_folder + ").\n\n");
@@ -225,7 +254,7 @@ module.exports = function(grunt) {
     latest_file = changelog_folder + "/" + latest;
     latest_extension = get_file_extension(latest);
     latest_version = latest.slice(prefix.length, -latest_extension.length - 1);
-    fs.appendFileSync(output, "### Latest changelog is for [" + latest + "](/" + latest_file + "):\n\n");
+    fs.appendFileSync(output, "" + h2 + "# Latest changelog is for [" + latest + "](/" + latest_file + "):\n\n");
     if (!grunt.file.exists(latest_file)) {
       return grunt.fail.fatal("Changelog file \"" + latest_file + "\" not found.");
     } else {
@@ -237,7 +266,7 @@ module.exports = function(grunt) {
     var date, output, str;
 
     if (opts.informative) {
-      inform("Adding the generation message, thank you");
+      inform("Adding the generation message, thank you for your support!");
     }
     output = opts.output;
     date = new Date();
@@ -245,7 +274,7 @@ module.exports = function(grunt) {
     return fs.appendFileSync(output, str);
   };
   return grunt.registerMultiTask("readme_generator", "Generate Readme File", function() {
-    var changelog_inserted, file, files, options, title;
+    var changelog_inserted, file, files, options, pkg, title;
 
     options = this.options({
       readme_folder: "readme",
@@ -254,18 +283,25 @@ module.exports = function(grunt) {
       toc_extra_links: [],
       generate_changelog: false,
       changelog_folder: "changelogs",
-      changelog_version_prefix: "",
-      changelog_insert_before: "",
+      changelog_version_prefix: null,
+      changelog_insert_before: null,
       banner: null,
       has_travis: true,
       github_username: "aponxi",
+      travis_branch: "master",
       generate_footer: true,
       generate_title: true,
-      package_name: "",
-      package_desc: "",
-      informative: true
+      package_title: null,
+      package_name: null,
+      package_desc: null,
+      informative: true,
+      h1: "#",
+      h2: "##",
+      back_to_top_custom: null
     });
     grunt.file.write(options.output, "");
+    pkg = get_package_info(options);
+    options.pkg = pkg;
     files = this.data.order;
     if (options.banner != null) {
       generate_banner(options);
