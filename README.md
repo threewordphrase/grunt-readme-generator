@@ -22,9 +22,9 @@
              \____/\___|_| |_|\___|_|  \__,_|\__\___/|_|   
                                                            
                                                    
-# Grunt ReadMe Generator 
+# grunt-readme-generator [![Build Status](https://secure.travis-ci.org/aponxi/grunt-readme-generator.png?branch=master)](http://travis-ci.org/aponxi/grunt-readme-generator)
 
-> A grunt task to generate a dynamic readme.md from partial markdown files in readme folder.
+> A grunt task to generate a dynamic readme.md from partial markdown files in readme folder. Specifically designed for GitHub projects!
 
 ## Jump to Section
 
@@ -37,7 +37,39 @@
 * [Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)
 
 ## Getting Started
-[[Back To Top]](#grunt-readme-generator)
+[[Back To Top]](#grunt-readme-generator-)
+
+This plugin is to generate readme files from many tiny sections of the readme. The readme you are reading is also generated with this plugin!
+
+Lets say you have a readme structure such as:
+
+    - Installation
+    - Usage
+        -- Example
+        -- Example Output
+    - Documentation
+        -- Options
+            --- option1
+            --- option2
+        -- API
+    - License
+    - Contributing
+
+- You can write a task to generate `Options.md` from `option1.md` and `option2.md`
+- Then a task to generate `Documentation.md` from `Options.md` and `API.md`
+- Another task to generate `Usage.md` from `Example.md` and `Example Output.md` files
+- And wrap it all up by creating the `Readme.md` from `Installation.md`, Usage.md`, `Documentation.md`, `License.md` and `Contributing.md`
+- voilà !
+
+### Highlights
+
+- Automatic table of contents generation
+- Automatic `Back To Top` link generation
+- Highly customizable for many many parts of the bigger picture
+- Automatic Title and Description generation on the top
+- Option to generate travis build status image on the top for desired branch
+- Specifically designed for GitHub projects and [GFM](https://help.github.com/articles/github-flavored-markdown)
+- Optional banners on the top to put a logo or ascii art!
 
 This plugin requires Grunt `~0.4.1`
 
@@ -54,7 +86,7 @@ grunt.loadNpmTasks('grunt-readme-generator');
 ```
 
 ## Usage
-[[Back To Top]](#grunt-readme-generator)
+[[Back To Top]](#grunt-readme-generator-)
 
 In your project's Gruntfile, add a section named `readme_generator` to the data object passed into `grunt.initConfig()`.
 
@@ -65,26 +97,32 @@ grunt.initConfig({
     options: {
       // Task-specific options go here.
       // detailed explanation is under options
+      // Default options:
       readme_folder: "readme",
       output: "README.md",
       table_of_contents: true,
       toc_extra_links: [],
       generate_changelog: false,
       changelog_folder: "changelogs",
-      changelog_version_prefix: "",
-      changelog_insert_before: "",
+      changelog_version_prefix: null,
+      changelog_insert_before: null,
       banner: null,
       has_travis: true,
       github_username: "aponxi",
+      travis_branch: "master",
       generate_footer: true,
       generate_title: true,
-      package_name: "",
-      package_desc: "",
-      informative: true
+      package_title: null,
+      package_name: null,
+      package_desc: null,
+      informative: true,
+      h1: "#",
+      h2: "##",
+      back_to_top_custom: null
     },
     order: {
       // Title of the piece and the File name goes here
-      // like so
+      // "Filename" : "Title"
       "installation.md": "Installation",
       "usage.md": "Usage",
       "options.md": "Options",
@@ -105,7 +143,7 @@ grunt.initConfig({
 To test use `grunt test` command and look at the outputs under `test/` folder.
 
 ## Options
-[[Back To Top]](#grunt-readme-generator)
+[[Back To Top]](#grunt-readme-generator-)
 
 
 ### Notes on the features
@@ -204,7 +242,7 @@ changelog_folder: "changelogs"
 - If you have `_2.4.3.md` in there for some reason and other changelogs as `v2.4.2.md`, `v2.4.3.md` you could easily include only those two files by setting prefix to `"v"`. It would only look for files that start with `v` and sort from those.
 
 ```coffee
-changelog_version_prefix: "" 
+changelog_version_prefix: null 
 ```
 
 #### changelog_insert_before
@@ -217,7 +255,7 @@ changelog_version_prefix: ""
 - Default is:
 
 ```coffee
-changelog_insert_before: "" 
+changelog_insert_before: null 
 ```
 
 #### banner
@@ -257,6 +295,19 @@ has_travis: on
 github_username: "aponxi" 
 ```
 
+#### travis_branch
+> this specifies the travis branch that you want to use for the build status logo
+
+- If you want to use develop branch for your travis build status logo then set it to `"develop"
+`
+- This only works if you have `generate_title` and `has_travis` turned `on`
+
+- By default:
+
+```coffee
+travis_branch : "master"
+```
+
 #### generate_footer
 > generates automatic footer that tells the time it was generated using this task
 
@@ -293,10 +344,18 @@ grunt.initConfig({
 generate_title: on 
 ```
 
+#### package_title
+> This can be different than the package name, this will be on the title of the readme and used for anchor purposes to go back to the top
+
+- This overrides `package_name` option for title.
+- Allows you to customize your Readme title
+- For example instead of `grunt-readme-generator` I could say `Readme Generator`
+
 #### package_name
 > by default we get it from the package.json
 
 - `Back to top` links from `Table of Contents` uses this to generate anchors that link to the title, thus allowing to jump to the top of the page.
+- While generating the travis image, we use package name
 - `Generate title` also uses this to generate the title
 - This option accepts a string such as `"My Plugin Title"`
 - By default it is empty, allowing the pacakge name to be gotten from package.json. To have it get it from package.json you must  add this line under `grunt.initConfig` in your Gruntfile: 
@@ -310,7 +369,7 @@ grunt.initConfig({
 - Default value:
 
 ```coffee
-package_name : "" 
+package_name : null 
 ```
 #### package_desc
 > by default we get it from package.json
@@ -329,7 +388,7 @@ grunt.initConfig({
 - Default value:
 
 ```coffee
-package_desc : "" 
+package_desc : null 
 ```
 
 #### informative
@@ -355,25 +414,76 @@ informative : yes
 Your readme file "test/readme_no_changelog.md" is ready!
 ```
 
+#### h1
+> for the auto generated title of the readme
+
+- If you are generating a documentation from many different markdown files then you would probably want the big titles be `### option group` and smaller titles be `#### option` and when you are generating the whole readme from another grunt task then you would want the title of the many option groups to be `##Options`
+- By setting this option to `###` you can make the titles of the markdown files to be `### title`
+- Be sure to set `h2` option to `####` for that case, so that sub-titles will appear nicely.
+- By default:
+
+```coffee
+h1 : "#"
+```
+
+#### h2
+> for the auto generated title of the section, like usage or legal or installation parts of the readme
+
+- Similar to the `h1` option, set this to make the sub-titles appear differently
+- Usually used with `h1` option
+- By default:
+
+```coffee
+h2 : "##"
+```
+
+#### back_to_top_custom
+> where backtotop leads you, by default it takes you to the title of the readme
+
+- This is used with `table_of_contents` option
+- Normally, it would take you to the title of the readme page. This is to override that.
+- If you want to change that for whatever reason, set it to the exact link you want to provide
+- for example `back_to_top_custom : "#my-custom-anchor-in-the-readme-page"`
+- By default:
+
+```coffee
+back_to_top_custom : null
+```
+
 ## Release History
-[[Back To Top]](#grunt-readme-generator)
+[[Back To Top]](#grunt-readme-generator-)
 
 You can find [all the changelogs here](/changelogs).
 
 ### Latest changelog is for [v0.2.0.md](/changelogs/v0.2.0.md):
 
-#### v0.2.0 05/Jun/2013
-- Wrote the documentation
-- Fixed some more issues with prefix check. Now if there isn't a prefix, it sorts the files under changelog alphabetically. z0.1.0.md, and v0.1.0.md are both included in the sorting process.
-- changed some default options to more convenient values
+#### v0.2.3 06/Jun/2013
+- Check null checks and empty strings for option failsafe
+- Get the package info once #7
+- add these new options
+-- travis_branch #3
+-- package_title
+-- h1 #5
+-- h2 #5
+-- back_to_top_custom
+- Latest changelog is h2 + #. So if h2 is ##, then it is ###Latest Changelog. Because ## would be Release history title and latest changelog is its sub-title.
 
 #### v0.2.2 05/Jun/2013
 - Minor typo fixes
 - added keywords to package
 - released the package
 
+#### v0.2.0 05/Jun/2013
+- Wrote the documentation
+- Fixed some more issues with prefix check. Now if there isn't a prefix, it sorts the files under changelog alphabetically. z0.1.0.md, and v0.1.0.md are both included in the sorting process.
+- changed some default options to more convenient values
+- updated docs
+- added more tests
+- updated keywords and package desc.
+
+
 ## Legal Mambo Jambo
-[[Back To Top]](#grunt-readme-generator)
+[[Back To Top]](#grunt-readme-generator-)
 
 Copyright © 2013 aponxi <aponxi@weaponxi.com>
 
@@ -382,4 +492,4 @@ This software is licensed under [MIT License](http://aponxi.mit-license.org/).
 
 
 --------
-<small>_This readme has been automatically generated by [readme generator](https://github.com/aponxi/grunt-readme-generator) on Wed Jun 05 2013 20:47:50 GMT-0400 (EDT)._</small>
+<small>_This readme has been automatically generated by [readme generator](https://github.com/aponxi/grunt-readme-generator) on Thu Jun 06 2013 17:16:08 GMT-0400 (EDT)._</small>

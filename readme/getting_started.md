@@ -1,4 +1,6 @@
-This plugin is to generate readme files from many tiny sections of the readme. Lets say you have a readme structure such as:
+This plugin is to generate readme files from many tiny sections of the readme. The readme you are reading is also generated with this plugin!
+
+Lets say you have a readme structure such as:
 
     - Installation
     - Usage
@@ -16,6 +18,7 @@ This plugin is to generate readme files from many tiny sections of the readme. L
 - Then a task to generate `Documentation.md` from `Options.md` and `API.md`
 - Another task to generate `Usage.md` from `Example.md` and `Example Output.md` files
 - And wrap it all up by creating the `Readme.md` from `Installation.md`, Usage.md`, `Documentation.md`, `License.md` and `Contributing.md`
+- voilà !
 
 ### Highlights
 

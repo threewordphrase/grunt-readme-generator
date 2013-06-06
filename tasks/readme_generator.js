@@ -205,7 +205,7 @@ module.exports = function(grunt) {
     fs.appendFileSync(output, "" + h1 + " " + title + " ");
     if (travis) {
       if (opts.informative) {
-        inform("Engineering travis button");
+        inform("Engineering travis button for " + username + "/" + pkg_name + " " + branch + " branch");
       }
       tra = "[![Build Status](https://secure.travis-ci.org/" + username + "/" + pkg_name + ".png?branch=" + branch + ")](http://travis-ci.org/" + username + "/" + pkg_name + ")";
       fs.appendFileSync(output, "" + tra);
