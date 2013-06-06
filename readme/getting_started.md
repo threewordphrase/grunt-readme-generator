@@ -17,7 +17,7 @@ Lets say you have a readme structure such as:
 - You can write a task to generate `Options.md` from `option1.md` and `option2.md`
 - Then a task to generate `Documentation.md` from `Options.md` and `API.md`
 - Another task to generate `Usage.md` from `Example.md` and `Example Output.md` files
-- And wrap it all up by creating the `Readme.md` from `Installation.md`, Usage.md`, `Documentation.md`, `License.md` and `Contributing.md`
+- And wrap it all up by creating the `Readme.md` from `Installation.md`, `Usage.md`, `Documentation.md`, `License.md` and `Contributing.md`
 - voilà !
 
 ### Highlights
