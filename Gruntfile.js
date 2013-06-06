@@ -3,7 +3,7 @@
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     clean: {
-      tests: ["test/readme.md", "test/readme_no_toc.md", "test/readme_all_options.md", "test/readme_no_travis.md", "test/readme_no_footer.md", "test/readme_no_changelog.md", "test/default_options.md", "test/testing_anomallies.md"]
+      tests: ["test/readme.md", "test/readme_no_toc.md", "test/readme_all_options.md", "test/readme_no_travis.md", "test/readme_no_footer.md", "test/readme_no_changelog.md", "test/default_options.md", "test/testing_anomallies.md", "test/readme_different_header.md"]
     },
     readme_generator: {
       default_options: {
@@ -71,6 +71,30 @@
           generate_changelog: true,
           has_travis: true,
           output: "test/readme_all_options.md",
+          table_of_contents: true,
+          readme_folder: "test/readme",
+          changelog_folder: "test/changelogs",
+          changelog_version_prefix: "v",
+          toc_extra_links: ["[Tip Me ![](http://i.imgur.com/C0P9DIx.gif?1)](https://www.gittip.com/aponxi/)", "[Donate Me! ![](http://i.imgur.com/2tqfhMO.png?1)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBUW4M9LKTR62)"],
+          banner: "banner.md"
+        },
+        order: {
+          "installation.md": "Installation",
+          "usage.md": "Usage",
+          "options.md": "Options",
+          "example.md": "Example",
+          "output.md": "Example Output",
+          "building-and-testing.md": "Building and Testing",
+          "legal.md": "Legal Mambo Jambo"
+        }
+      },
+      different_header: {
+        options: {
+          generate_changelog: true,
+          h1: "##",
+          h2: "###",
+          has_travis: true,
+          output: "test/readme_different_header.md",
           table_of_contents: true,
           readme_folder: "test/readme",
           changelog_folder: "test/changelogs",
@@ -183,7 +207,7 @@
   });
   grunt.loadTasks("tasks");
   grunt.loadNpmTasks("grunt-contrib-clean");
-  grunt.registerTask("test", ["clean", "readme_generator:all_options", "readme_generator:no_toc", "readme_generator:no_travis", "readme_generator:no_footer", "readme_generator:no_release_history", "readme_generator:default_options", "readme_generator:testing_anomallies"]);
+  grunt.registerTask("test", ["clean", "readme_generator:all_options", "readme_generator:no_toc", "readme_generator:no_travis", "readme_generator:no_footer", "readme_generator:no_release_history", "readme_generator:default_options", "readme_generator:testing_anomallies", "readme_generator:different_header"]);
   grunt.registerTask("build", ["readme_generator:this_readme"]);
   return grunt.registerTask("default", ["build"]);
 };

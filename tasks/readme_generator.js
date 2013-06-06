@@ -103,9 +103,7 @@ module.exports = function(grunt) {
           if (filename.substring(0, prefix.length) === prefix) {
             versions_found.push(filename);
           }
-          console.log("there is a prefix " + prefix);
         } else {
-          console.log("there isnt a prefix " + prefix);
           versions_found.push(filename);
         }
       }
@@ -232,7 +230,7 @@ module.exports = function(grunt) {
     h2 = opts.h2;
     fs.appendFileSync(output, "" + h2 + " Release History\n");
     if (opts.table_of_contents) {
-      top = back_to_top(travis);
+      top = back_to_top(opts);
       fs.appendFileSync(output, "" + top + "\n");
     }
     fs.appendFileSync(output, "\nYou can find [all the changelogs here](/" + changelog_folder + ").\n\n");

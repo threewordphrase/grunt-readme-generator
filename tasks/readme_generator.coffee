@@ -65,6 +65,7 @@ module.exports = (grunt) ->
     # if back to top option was provided then we use that
     if opts.back_to_top_custom? then str = opts.back_to_top_custom
     else
+      # console.dir pkg
       str = make_anchor pkg.title
       if travis then str += "-"
 
@@ -100,10 +101,10 @@ module.exports = (grunt) ->
         if prefix.length > 0
           if filename.substring(0,prefix.length) is prefix
             versions_found.push filename
-          console.log "there is a prefix #{prefix}"
+          # console.log "there is a prefix #{prefix}"
         else
           # else just push it anyways
-          console.log "there isnt a prefix #{prefix}"
+          # console.log "there isnt a prefix #{prefix}"
           versions_found.push filename
       
   
@@ -223,11 +224,12 @@ module.exports = (grunt) ->
     output = opts.output
     h2 = opts.h2
     fs.appendFileSync output, "#{h2} Release History\n"
-
+    
     if opts.table_of_contents
-      top = back_to_top(travis)
+      top = back_to_top(opts)
       fs.appendFileSync output, "#{top}\n"
     fs.appendFileSync output, "\nYou can find [all the changelogs here](/#{changelog_folder}).\n\n"
+
     latest = get_latest_changelog opts
     latest_file = changelog_folder + "/" + latest
 
@@ -320,6 +322,7 @@ module.exports = (grunt) ->
 
     pkg = get_package_info options
     options.pkg = pkg
+    # console.log options.pkg
 
     files = @data.order
     # generate banner
