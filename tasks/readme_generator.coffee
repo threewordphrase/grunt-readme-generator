@@ -75,7 +75,7 @@ module.exports = (grunt) ->
       # console.dir pkg
       # str = make_anchor pkg.title
       # if travis then str += "-"
-      str = "jump-to-section"
+      str = "#jump-to-section"
 
     result = "\[[Back To Top]\](#{str})"
 
