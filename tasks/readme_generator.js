@@ -199,7 +199,7 @@ module.exports = function(grunt) {
         inform("Engineering travis button for " + username + "/" + pkg_name + " " + branch + " branch");
       }
       tra = "[![Build Status](https://secure.travis-ci.org/" + username + "/" + pkg_name + ".png?branch=" + branch + ")](http://travis-ci.org/" + username + "/" + pkg_name + ")";
-      fs.appendFileSync(output, "" + tra);
+      fs.appendFileSync(output, "\n" + tra);
     }
     return fs.appendFileSync(output, "\n\n> " + desc + "\n\n");
   };

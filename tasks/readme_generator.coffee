@@ -199,7 +199,7 @@ module.exports = (grunt) ->
       if opts.informative then inform "Engineering travis button for #{username}/#{pkg_name} #{branch} branch"
       # console.log opts.github_username
       tra = "[![Build Status](https://secure.travis-ci.org/#{username}/#{pkg_name}.png?branch=#{branch})](http://travis-ci.org/#{username}/#{pkg_name})"
-      fs.appendFileSync output, "#{tra}"
+      fs.appendFileSync output, "\n#{tra}"
   
     fs.appendFileSync output, "\n\n> #{desc}\n\n"
 
