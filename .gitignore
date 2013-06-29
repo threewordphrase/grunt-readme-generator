@@ -9,4 +9,5 @@ test/readme_no_changelog.md
 test/default_options.md
 test/testing_anomallies.md
 test/readme_different_header.md
+test/no_package_info.md
 *.sublime-*

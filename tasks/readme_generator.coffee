@@ -25,6 +25,9 @@ module.exports = (grunt) ->
     if opts.package_desc? and opts.package_desc.length > 0 then desc = opts.package_desc
     else is_package_json_needed = yes
 
+    if !opts.generate_title
+      inform "No need to get package info"
+      return false
     # console.log is_package_json_needed
     if opts.informative then inform "Need to fill in the blanks from package.json"
 
@@ -70,8 +73,9 @@ module.exports = (grunt) ->
     if opts.back_to_top_custom? then str = opts.back_to_top_custom
     else
       # console.dir pkg
-      str = make_anchor pkg.title
-      if travis then str += "-"
+      # str = make_anchor pkg.title
+      # if travis then str += "-"
+      str = "#jump-to-section"
 
     result = "\[[Back To Top]\](#{str})"
 
@@ -195,7 +199,7 @@ module.exports = (grunt) ->
       if opts.informative then inform "Engineering travis button for #{username}/#{pkg_name} #{branch} branch"
       # console.log opts.github_username
       tra = "[![Build Status](https://secure.travis-ci.org/#{username}/#{pkg_name}.png?branch=#{branch})](http://travis-ci.org/#{username}/#{pkg_name})"
-      fs.appendFileSync output, "#{tra}"
+      fs.appendFileSync output, "\n#{tra}"
   
     fs.appendFileSync output, "\n\n> #{desc}\n\n"
 
@@ -245,7 +249,8 @@ module.exports = (grunt) ->
     # then we omit `md` (latest_extension.length) then `.` (-1)
     latest_version = latest.slice(prefix.length, - latest_extension.length - 1)
 
-    fs.appendFileSync output, "#{h2}# Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
+    # fs.appendFileSync output, "#{h2}# Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
+    fs.appendFileSync output, "#{h2}# Latest changelog is from #{latest}:\n\n"
     unless grunt.file.exists latest_file
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
