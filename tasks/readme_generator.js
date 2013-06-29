@@ -78,7 +78,7 @@ module.exports = function(grunt) {
     if (opts.back_to_top_custom != null) {
       str = opts.back_to_top_custom;
     } else {
-      str = "jump-to-section";
+      str = "#jump-to-section";
     }
     return result = "\[[Back To Top]\](" + str + ")";
   };
