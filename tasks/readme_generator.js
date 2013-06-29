@@ -25,6 +25,10 @@ module.exports = function(grunt) {
     } else {
       is_package_json_needed = true;
     }
+    if (!opts.generate_title) {
+      inform("No need to get package info");
+      return false;
+    }
     if (opts.informative) {
       inform("Need to fill in the blanks from package.json");
     }

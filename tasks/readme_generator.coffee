@@ -25,7 +25,7 @@ module.exports = (grunt) ->
     if opts.package_desc? and opts.package_desc.length > 0 then desc = opts.package_desc
     else is_package_json_needed = yes
 
-    if not opts.generate_TOC and not opts.generate_title and not opts.has_travis
+    if !opts.generate_title
       inform "No need to get package info"
       return false
     # console.log is_package_json_needed
