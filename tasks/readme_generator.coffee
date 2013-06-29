@@ -70,8 +70,9 @@ module.exports = (grunt) ->
     if opts.back_to_top_custom? then str = opts.back_to_top_custom
     else
       # console.dir pkg
-      str = make_anchor pkg.title
-      if travis then str += "-"
+      # str = make_anchor pkg.title
+      # if travis then str += "-"
+      str = "jump-to-section"
 
     result = "\[[Back To Top]\](#{str})"
 
@@ -245,7 +246,8 @@ module.exports = (grunt) ->
     # then we omit `md` (latest_extension.length) then `.` (-1)
     latest_version = latest.slice(prefix.length, - latest_extension.length - 1)
 
-    fs.appendFileSync output, "#{h2}# Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
+    # fs.appendFileSync output, "#{h2}# Latest changelog is for [#{latest}](/#{latest_file}):\n\n"
+    fs.appendFileSync output, "#{h2}# Latest changelog is from #{latest}:\n\n"
     unless grunt.file.exists latest_file
       grunt.fail.fatal "Changelog file \"" + latest_file + "\" not found."
     else
