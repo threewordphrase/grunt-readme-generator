@@ -7,4 +7,5 @@ notifications:
     - info@weaponxi.com
 before_script:
   - npm install -g grunt-cli
-  - grunt --version
+  - echo `grunt --version`
+
