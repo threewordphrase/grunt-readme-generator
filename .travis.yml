@@ -8,4 +8,3 @@ notifications:
 before_script:
   - npm install -g grunt-cli
   - echo `grunt --version`
-
