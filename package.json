@@ -12,6 +12,7 @@
     "markdown",
     "md",
     "readme",
+    "automatic",
     "generator",
     "grunt",
     "task",
@@ -33,7 +34,8 @@
     "doc",
     "doc-gen",
     "documentation-generator",
-    "github-flavored-markdown"
+    "github-flavored-markdown",
+    "gruntplugin"
 
   ],
 
@@ -63,8 +65,5 @@
   },
   "peerDependencies": {
     "grunt": "~0.4.1"
-  },
-  "keywords": [
-    "gruntplugin"
-  ]
+  }
 }

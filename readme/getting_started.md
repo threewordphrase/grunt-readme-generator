@@ -20,6 +20,22 @@ Lets say you have a readme structure such as:
 - And wrap it all up by creating the `Readme.md` from `Installation.md`, `Usage.md`, `Documentation.md`, `License.md` and `Contributing.md`
 - voilà !
 
+### Examples and tests
+
+There are several readme files that were generated to test options. The [grunt file](Gruntfile.js) has several tasks written to generate these readme files. The outputs of them can be found in the [test folder](test/). Here are quicklinks to those files:
+
+- [Default Options](test/default_options.md)
+- [No Package Info](test/no_package_info.md)
+- [All Options](test/readme_all_options.md)
+- [Different Header](test/readme_different_header.md)
+- [No Changelog](test/readme_no_changelog.md)
+- [No Footer](test/readme_no_footer.md)
+- [No Table of Contents](test/readme_no_toc.md)
+- [No Travis](test/readme_no_travis.md)
+- [Testing for Abnormalities](test/testing_anomallies.md)
+
+
+
 ### Highlights
 
 - Automatic table of contents generation

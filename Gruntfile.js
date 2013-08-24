@@ -14,6 +14,7 @@ module.exports = function(grunt) {
           changelog_folder: "test/changelogs"
         },
         order: {
+          "default_options.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -36,6 +37,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "testing_anomallies.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -58,6 +60,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "no_package_info.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -80,6 +83,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "no_toc.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -102,6 +106,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "all_options.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -126,6 +131,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "different_header.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -148,6 +154,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "no_travis.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -171,6 +178,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "no_footer.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -191,6 +199,7 @@ module.exports = function(grunt) {
           banner: "banner.md"
         },
         order: {
+          "no_release_history.md": "Options used to generate this readme file",
           "installation.md": "Installation",
           "usage.md": "Usage",
           "options.md": "Options",
@@ -232,5 +241,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.registerTask("test", ["clean", "readme_generator:all_options", "readme_generator:no_toc", "readme_generator:no_travis", "readme_generator:no_footer", "readme_generator:no_release_history", "readme_generator:default_options", "readme_generator:testing_anomallies", "readme_generator:different_header", "readme_generator:no_package_info"]);
   grunt.registerTask("build", ["readme_generator:this_readme"]);
+  grunt.registerTask("release", ["build", "test"]);
   return grunt.registerTask("default", ["build"]);
 };

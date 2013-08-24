@@ -62,6 +62,22 @@ Lets say you have a readme structure such as:
 - And wrap it all up by creating the `Readme.md` from `Installation.md`, `Usage.md`, `Documentation.md`, `License.md` and `Contributing.md`
 - voilà !
 
+### Examples and tests
+
+There are several readme files that were generated to test options. The [grunt file](Gruntfile.js) has several tasks written to generate these readme files. The outputs of them can be found in the [test folder](test/). Here are quicklinks to those files:
+
+- [Default Options](test/default_options.md)
+- [No Package Info](test/no_package_info.md)
+- [All Options](test/readme_all_options.md)
+- [Different Header](test/readme_different_header.md)
+- [No Changelog](test/readme_no_changelog.md)
+- [No Footer](test/readme_no_footer.md)
+- [No Table of Contents](test/readme_no_toc.md)
+- [No Travis](test/readme_no_travis.md)
+- [Testing for Abnormalities](test/testing_anomallies.md)
+
+
+
 ### Highlights
 
 - Automatic table of contents generation
@@ -95,44 +111,46 @@ In your project's Gruntfile, add a section named `readme_generator` to the data 
 grunt.initConfig({
   pkg: grunt.file.readJSON('package.json'),
   readme_generator: {
-    options: {
-      // Task-specific options go here.
-      // detailed explanation is under options
-      // Default options:
-      readme_folder: "readme",
-      output: "README.md",
-      table_of_contents: true,
-      toc_extra_links: [],
-      generate_changelog: false,
-      changelog_folder: "changelogs",
-      changelog_version_prefix: null,
-      changelog_insert_before: null,
-      banner: null,
-      has_travis: true,
-      github_username: "aponxi",
-      travis_branch: "master",
-      generate_footer: true,
-      generate_title: true,
-      package_title: null,
-      package_name: null,
-      package_desc: null,
-      informative: true,
-      h1: "#",
-      h2: "##",
-      back_to_top_custom: null
-    },
-    order: {
-      // Title of the piece and the File name goes here
-      // "Filename" : "Title"
-      "installation.md": "Installation",
-      "usage.md": "Usage",
-      "options.md": "Options",
-      "example.md": "Example",
-      "output.md": "Example Output",
-      "building-and-testing.md": "Building and Testing",
-      "legal.md": "Legal Mambo Jambo"
-    },
-  },
+    my_generator : { //Thank you @JFusco
+      options: {
+        // Task-specific options go here.
+        // detailed explanation is under options
+        // Default options:
+        readme_folder: "readme",
+        output: "README.md",
+        table_of_contents: true,
+        toc_extra_links: [],
+        generate_changelog: false,
+        changelog_folder: "changelogs",
+        changelog_version_prefix: null,
+        changelog_insert_before: null,
+        banner: null,
+        has_travis: true,
+        github_username: "aponxi",
+        travis_branch: "master",
+        generate_footer: true,
+        generate_title: true,
+        package_title: null,
+        package_name: null,
+        package_desc: null,
+        informative: true,
+        h1: "#",
+        h2: "##",
+        back_to_top_custom: null
+      },
+      order: {
+        // Title of the piece and the File name goes here
+        // "Filename" : "Title"
+        "installation.md": "Installation",
+        "usage.md": "Usage",
+        "options.md": "Options",
+        "example.md": "Example",
+        "output.md": "Example Output",
+        "building-and-testing.md": "Building and Testing",
+        "legal.md": "Legal Mambo Jambo"
+      }
+    }
+  }
 })
 ```
 
@@ -456,36 +474,11 @@ back_to_top_custom : null
 
 You can find [all the changelogs here](/changelogs).
 
-### Latest changelog is from v0.2.0.md:
+### Latest changelog is from v0.3.0.md:
 
-#### v0.2.32 06/Jun/2013
-- fixed typos
-- grunt support added for travis
-
-#### v0.2.3 06/Jun/2013
-- Check null checks and empty strings for option failsafe
-- Get the package info once #7
-- add these new options
--- travis_branch #3
--- package_title
--- h1 #5
--- h2 #5
--- back_to_top_custom
-- Latest changelog is `h2 + #`. So if h2 is `##`, then it is `###Latest Changelog`. Because `##` would be Release history title and latest changelog is its sub-title.
-
-#### v0.2.2 05/Jun/2013
-- Minor typo fixes
-- added keywords to package
-- released the package
-
-#### v0.2.0 05/Jun/2013
-- Wrote the documentation
-- Fixed some more issues with prefix check. Now if there isn't a prefix, it sorts the files under changelog alphabetically. z0.1.0.md, and v0.1.0.md are both included in the sorting process.
-- changed some default options to more convenient values
-- updated docs
-- added more tests
-- updated keywords and package desc.
-
+#### v0.3.4 23/Aug/2013
+- added relative options to test readmes
+- fixed doc
 
 ## Legal Mambo Jambo
 [[Back To Top]](#jump-to-section)
@@ -497,4 +490,4 @@ This software is licensed under [MIT License](http://aponxi.mit-license.org/).
 
 
 --------
-<small>_This readme has been automatically generated by [readme generator](https://github.com/aponxi/grunt-readme-generator) on Fri Jul 26 2013 03:32:44 GMT-0400 (EDT)._</small>
+<small>_This readme has been automatically generated by [readme generator](https://github.com/aponxi/grunt-readme-generator) on Fri Aug 23 2013 20:47:40 GMT-0400 (EDT)._</small>
