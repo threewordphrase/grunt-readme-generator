@@ -53,8 +53,9 @@
 </code></pre>
 
 <h1>
-<a name="grunt-readme-generator-" class="anchor" href="#grunt-readme-generator-"><span class="octicon octicon-link"></span></a>grunt-readme-generator <a href="http://travis-ci.org/aponxi/grunt-readme-generator"><img src="https://secure.travis-ci.org/aponxi/grunt-readme-generator.png?branch=master" alt="Build Status"></a>
-</h1>
+<a name="grunt-readme-generator" class="anchor" href="#grunt-readme-generator"><span class="octicon octicon-link"></span></a>grunt-readme-generator</h1>
+
+<p><a href="http://travis-ci.org/aponxi/grunt-readme-generator"><img src="https://secure.travis-ci.org/aponxi/grunt-readme-generator.png?branch=master" alt="Build Status"></a></p>
 
 <blockquote>
 <p>A grunt task to generate a dynamic readme.md from partial markdown files in readme folder. Specifically designed for GitHub projects!</p>
@@ -74,7 +75,7 @@
 </ul><h2>
 <a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
 
-<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
+<p><a href="#jump-to-section">[Back To Top]</a></p>
 
 <p>This plugin is to generate readme files from many tiny sections of the readme. The readme you are reading is also generated with this plugin!</p>
 
@@ -103,6 +104,21 @@
 </li>
 <li>voilà !</li>
 </ul><h3>
+<a name="examples-and-tests" class="anchor" href="#examples-and-tests"><span class="octicon octicon-link"></span></a>Examples and tests</h3>
+
+<p>There are several readme files that were generated to test options. The <a href="Gruntfile.js">grunt file</a> has several tasks written to generate these readme files. The outputs of them can be found in the <a href="test/">test folder</a>. Here are quicklinks to those files:</p>
+
+<ul>
+<li><a href="test/default_options.md">Default Options</a></li>
+<li><a href="test/no_package_info.md">No Package Info</a></li>
+<li><a href="test/readme_all_options.md">All Options</a></li>
+<li><a href="test/readme_different_header.md">Different Header</a></li>
+<li><a href="test/readme_no_changelog.md">No Changelog</a></li>
+<li><a href="test/readme_no_footer.md">No Footer</a></li>
+<li><a href="test/readme_no_toc.md">No Table of Contents</a></li>
+<li><a href="test/readme_no_travis.md">No Travis</a></li>
+<li><a href="test/testing_anomallies.md">Testing for Abnormalities</a></li>
+</ul><h3>
 <a name="highlights" class="anchor" href="#highlights"><span class="octicon octicon-link"></span></a>Highlights</h3>
 
 <ul>
@@ -129,51 +145,53 @@
 <h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
+<p><a href="#jump-to-section">[Back To Top]</a></p>
 
 <p>In your project's Gruntfile, add a section named <code>readme_generator</code> to the data object passed into <code>grunt.initConfig()</code>.</p>
 
 <div class="highlight"><pre><span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">({</span>
   <span class="nx">pkg</span><span class="o">:</span> <span class="nx">grunt</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">readJSON</span><span class="p">(</span><span class="s1">'package.json'</span><span class="p">),</span>
   <span class="nx">readme_generator</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
-      <span class="c1">// Task-specific options go here.</span>
-      <span class="c1">// detailed explanation is under options</span>
-      <span class="c1">// Default options:</span>
-      <span class="nx">readme_folder</span><span class="o">:</span> <span class="s2">"readme"</span><span class="p">,</span>
-      <span class="nx">output</span><span class="o">:</span> <span class="s2">"README.md"</span><span class="p">,</span>
-      <span class="nx">table_of_contents</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">toc_extra_links</span><span class="o">:</span> <span class="p">[],</span>
-      <span class="nx">generate_changelog</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-      <span class="nx">changelog_folder</span><span class="o">:</span> <span class="s2">"changelogs"</span><span class="p">,</span>
-      <span class="nx">changelog_version_prefix</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-      <span class="nx">changelog_insert_before</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-      <span class="nx">banner</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-      <span class="nx">has_travis</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">github_username</span><span class="o">:</span> <span class="s2">"aponxi"</span><span class="p">,</span>
-      <span class="nx">travis_branch</span><span class="o">:</span> <span class="s2">"master"</span><span class="p">,</span>
-      <span class="nx">generate_footer</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">generate_title</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">package_title</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-      <span class="nx">package_name</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-      <span class="nx">package_desc</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-      <span class="nx">informative</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-      <span class="nx">h1</span><span class="o">:</span> <span class="s2">"#"</span><span class="p">,</span>
-      <span class="nx">h2</span><span class="o">:</span> <span class="s2">"##"</span><span class="p">,</span>
-      <span class="nx">back_to_top_custom</span><span class="o">:</span> <span class="kc">null</span>
-    <span class="p">},</span>
-    <span class="nx">order</span><span class="o">:</span> <span class="p">{</span>
-      <span class="c1">// Title of the piece and the File name goes here</span>
-      <span class="c1">// "Filename" : "Title"</span>
-      <span class="s2">"installation.md"</span><span class="o">:</span> <span class="s2">"Installation"</span><span class="p">,</span>
-      <span class="s2">"usage.md"</span><span class="o">:</span> <span class="s2">"Usage"</span><span class="p">,</span>
-      <span class="s2">"options.md"</span><span class="o">:</span> <span class="s2">"Options"</span><span class="p">,</span>
-      <span class="s2">"example.md"</span><span class="o">:</span> <span class="s2">"Example"</span><span class="p">,</span>
-      <span class="s2">"output.md"</span><span class="o">:</span> <span class="s2">"Example Output"</span><span class="p">,</span>
-      <span class="s2">"building-and-testing.md"</span><span class="o">:</span> <span class="s2">"Building and Testing"</span><span class="p">,</span>
-      <span class="s2">"legal.md"</span><span class="o">:</span> <span class="s2">"Legal Mambo Jambo"</span>
-    <span class="p">},</span>
-  <span class="p">},</span>
+    <span class="nx">my_generator</span> <span class="o">:</span> <span class="p">{</span> <span class="c1">//Thank you @JFusco</span>
+      <span class="nx">options</span><span class="o">:</span> <span class="p">{</span>
+        <span class="c1">// Task-specific options go here.</span>
+        <span class="c1">// detailed explanation is under options</span>
+        <span class="c1">// Default options:</span>
+        <span class="nx">readme_folder</span><span class="o">:</span> <span class="s2">"readme"</span><span class="p">,</span>
+        <span class="nx">output</span><span class="o">:</span> <span class="s2">"README.md"</span><span class="p">,</span>
+        <span class="nx">table_of_contents</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">toc_extra_links</span><span class="o">:</span> <span class="p">[],</span>
+        <span class="nx">generate_changelog</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">changelog_folder</span><span class="o">:</span> <span class="s2">"changelogs"</span><span class="p">,</span>
+        <span class="nx">changelog_version_prefix</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">changelog_insert_before</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">banner</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">has_travis</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">github_username</span><span class="o">:</span> <span class="s2">"aponxi"</span><span class="p">,</span>
+        <span class="nx">travis_branch</span><span class="o">:</span> <span class="s2">"master"</span><span class="p">,</span>
+        <span class="nx">generate_footer</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">generate_title</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">package_title</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">package_name</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">package_desc</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">informative</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">h1</span><span class="o">:</span> <span class="s2">"#"</span><span class="p">,</span>
+        <span class="nx">h2</span><span class="o">:</span> <span class="s2">"##"</span><span class="p">,</span>
+        <span class="nx">back_to_top_custom</span><span class="o">:</span> <span class="kc">null</span>
+      <span class="p">},</span>
+      <span class="nx">order</span><span class="o">:</span> <span class="p">{</span>
+        <span class="c1">// Title of the piece and the File name goes here</span>
+        <span class="c1">// "Filename" : "Title"</span>
+        <span class="s2">"installation.md"</span><span class="o">:</span> <span class="s2">"Installation"</span><span class="p">,</span>
+        <span class="s2">"usage.md"</span><span class="o">:</span> <span class="s2">"Usage"</span><span class="p">,</span>
+        <span class="s2">"options.md"</span><span class="o">:</span> <span class="s2">"Options"</span><span class="p">,</span>
+        <span class="s2">"example.md"</span><span class="o">:</span> <span class="s2">"Example"</span><span class="p">,</span>
+        <span class="s2">"output.md"</span><span class="o">:</span> <span class="s2">"Example Output"</span><span class="p">,</span>
+        <span class="s2">"building-and-testing.md"</span><span class="o">:</span> <span class="s2">"Building and Testing"</span><span class="p">,</span>
+        <span class="s2">"legal.md"</span><span class="o">:</span> <span class="s2">"Legal Mambo Jambo"</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
 <span class="p">})</span>
 </pre></div>
 
@@ -188,7 +206,7 @@
 <h2>
 <a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Options</h2>
 
-<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
+<p><a href="#jump-to-section">[Back To Top]</a></p>
 
 <h3>
 <a name="notes-on-the-features" class="anchor" href="#notes-on-the-features"><span class="octicon octicon-link"></span></a>Notes on the features</h3>
@@ -197,8 +215,8 @@
 <li>Every folder name you provide is relative to the Gruntfile location, which is the root of your project</li>
 <li>If you see on/off yes/no that is true/false in CoffeeScript</li>
 <li>This readme has been generated by this plugin. Therefore the <a href="/readme">readme folder</a> and the <a href="/Gruntfile.js">Gruntfile</a> or <a href="/Gruntfile.coffee">Gruntfile.coffee</a> of this project are great examples. Also you can check out the <a href="/test">test folder</a> folder.</li>
-</ul><h4>
-<a name="readme_folder" class="anchor" href="#readme_folder"><span class="octicon octicon-link"></span></a>readme_folder</h4>
+</ul><h3>
+<a name="readme_folder" class="anchor" href="#readme_folder"><span class="octicon octicon-link"></span></a>readme_folder</h3>
 
 <blockquote>
 <p>the folder where readme partial files are located</p>
@@ -210,8 +228,8 @@
 </ul><div class="highlight"><pre><span class="nv">readme_folder: </span><span class="s">"readme"</span> 
 </pre></div>
 
-<h4>
-<a name="output" class="anchor" href="#output"><span class="octicon octicon-link"></span></a>output</h4>
+<h3>
+<a name="output" class="anchor" href="#output"><span class="octicon octicon-link"></span></a>output</h3>
 
 <blockquote>
 <p>where readme file should be generated in respect to Gruntfile location</p>
@@ -226,8 +244,8 @@
 </ul><div class="highlight"><pre><span class="nv">output: </span><span class="s">"README.md"</span> 
 </pre></div>
 
-<h4>
-<a name="table_of_contents" class="anchor" href="#table_of_contents"><span class="octicon octicon-link"></span></a>table_of_contents</h4>
+<h3>
+<a name="table_of_contents" class="anchor" href="#table_of_contents"><span class="octicon octicon-link"></span></a>table_of_contents</h3>
 
 <blockquote>
 <p>generate automatic table of contents</p>
@@ -241,8 +259,8 @@
 </ul><div class="highlight"><pre><span class="nv">table_of_contents: </span><span class="kc">on</span>
 </pre></div>
 
-<h4>
-<a name="toc_extra_links" class="anchor" href="#toc_extra_links"><span class="octicon octicon-link"></span></a>toc_extra_links</h4>
+<h3>
+<a name="toc_extra_links" class="anchor" href="#toc_extra_links"><span class="octicon octicon-link"></span></a>toc_extra_links</h3>
 
 <blockquote>
 <p>Sometimes I like adding quick-links on the top in table of contents. Table of contents (TOC) must be enabled for this option to matter</p>
@@ -264,8 +282,8 @@
 </ul><div class="highlight"><pre><span class="nv">toc_extra_links: </span><span class="p">[]</span> 
 </pre></div>
 
-<h4>
-<a name="generate_changelog" class="anchor" href="#generate_changelog"><span class="octicon octicon-link"></span></a>generate_changelog</h4>
+<h3>
+<a name="generate_changelog" class="anchor" href="#generate_changelog"><span class="octicon octicon-link"></span></a>generate_changelog</h3>
 
 <blockquote>
 <p>generates automatic changelog</p>
@@ -284,8 +302,8 @@
 </ul><div class="highlight"><pre><span class="nv">generate_changelog: </span><span class="kc">off</span> 
 </pre></div>
 
-<h4>
-<a name="changelog_folder" class="anchor" href="#changelog_folder"><span class="octicon octicon-link"></span></a>changelog_folder</h4>
+<h3>
+<a name="changelog_folder" class="anchor" href="#changelog_folder"><span class="octicon octicon-link"></span></a>changelog_folder</h3>
 
 <blockquote>
 <p>where changelog files are located</p>
@@ -299,8 +317,8 @@
 </ul><div class="highlight"><pre><span class="nv">changelog_folder: </span><span class="s">"changelogs"</span> 
 </pre></div>
 
-<h4>
-<a name="changelog_version_prefix" class="anchor" href="#changelog_version_prefix"><span class="octicon octicon-link"></span></a>changelog_version_prefix</h4>
+<h3>
+<a name="changelog_version_prefix" class="anchor" href="#changelog_version_prefix"><span class="octicon octicon-link"></span></a>changelog_version_prefix</h3>
 
 <blockquote>
 <p>under changelog folder, there are files like v0.1.0.md if the prefix is "V"</p>
@@ -312,8 +330,8 @@
 </ul><div class="highlight"><pre><span class="nv">changelog_version_prefix: </span><span class="kc">null</span> 
 </pre></div>
 
-<h4>
-<a name="changelog_insert_before" class="anchor" href="#changelog_insert_before"><span class="octicon octicon-link"></span></a>changelog_insert_before</h4>
+<h3>
+<a name="changelog_insert_before" class="anchor" href="#changelog_insert_before"><span class="octicon octicon-link"></span></a>changelog_insert_before</h3>
 
 <blockquote>
 <p>I like my legal stuff at the bottom of the readme and release history before that</p>
@@ -330,8 +348,8 @@
 </ul><div class="highlight"><pre><span class="nv">changelog_insert_before: </span><span class="kc">null</span> 
 </pre></div>
 
-<h4>
-<a name="banner" class="anchor" href="#banner"><span class="octicon octicon-link"></span></a>banner</h4>
+<h3>
+<a name="banner" class="anchor" href="#banner"><span class="octicon octicon-link"></span></a>banner</h3>
 
 <blockquote>
 <p>I like some ascii art on the top of the readme</p>
@@ -347,8 +365,8 @@
 </ul><div class="highlight"><pre><span class="nv">banner: </span><span class="kc">null</span> 
 </pre></div>
 
-<h4>
-<a name="has_travis" class="anchor" href="#has_travis"><span class="octicon octicon-link"></span></a>has_travis</h4>
+<h3>
+<a name="has_travis" class="anchor" href="#has_travis"><span class="octicon octicon-link"></span></a>has_travis</h3>
 
 <blockquote>
 <p>I use travis a lot and want to have the travis image generated on the top</p>
@@ -362,8 +380,8 @@
 </ul><div class="highlight"><pre><span class="nv">has_travis: </span><span class="kc">on</span>
 </pre></div>
 
-<h4>
-<a name="github_username" class="anchor" href="#github_username"><span class="octicon octicon-link"></span></a>github_username</h4>
+<h3>
+<a name="github_username" class="anchor" href="#github_username"><span class="octicon octicon-link"></span></a>github_username</h3>
 
 <blockquote>
 <p>this is mainly for travis link</p>
@@ -378,8 +396,8 @@
 </ul><div class="highlight"><pre><span class="nv">github_username: </span><span class="s">"aponxi"</span> 
 </pre></div>
 
-<h4>
-<a name="travis_branch" class="anchor" href="#travis_branch"><span class="octicon octicon-link"></span></a>travis_branch</h4>
+<h3>
+<a name="travis_branch" class="anchor" href="#travis_branch"><span class="octicon octicon-link"></span></a>travis_branch</h3>
 
 <blockquote>
 <p>this specifies the travis branch that you want to use for the build status logo</p>
@@ -394,8 +412,8 @@
 </ul><div class="highlight"><pre><span class="nv">travis_branch : </span><span class="s">"master"</span>
 </pre></div>
 
-<h4>
-<a name="generate_footer" class="anchor" href="#generate_footer"><span class="octicon octicon-link"></span></a>generate_footer</h4>
+<h3>
+<a name="generate_footer" class="anchor" href="#generate_footer"><span class="octicon octicon-link"></span></a>generate_footer</h3>
 
 <blockquote>
 <p>generates automatic footer that tells the time it was generated using this task</p>
@@ -411,8 +429,8 @@
 </ul><div class="highlight"><pre><span class="nv">generate_footer: </span><span class="kc">on</span> 
 </pre></div>
 
-<h4>
-<a name="generate_title" class="anchor" href="#generate_title"><span class="octicon octicon-link"></span></a>generate_title</h4>
+<h3>
+<a name="generate_title" class="anchor" href="#generate_title"><span class="octicon octicon-link"></span></a>generate_title</h3>
 
 <blockquote>
 <p>generates automatic title from package name and description</p>
@@ -435,8 +453,8 @@
 </ul><div class="highlight"><pre><span class="nv">generate_title: </span><span class="kc">on</span> 
 </pre></div>
 
-<h4>
-<a name="package_title" class="anchor" href="#package_title"><span class="octicon octicon-link"></span></a>package_title</h4>
+<h3>
+<a name="package_title" class="anchor" href="#package_title"><span class="octicon octicon-link"></span></a>package_title</h3>
 
 <blockquote>
 <p>This can be different than the package name, this will be on the title of the readme and used for anchor purposes to go back to the top</p>
@@ -447,8 +465,8 @@
 <li>Allows you to customize your Readme title</li>
 <li>For example instead of <code>grunt-readme-generator</code> I could say <code>Readme Generator</code>
 </li>
-</ul><h4>
-<a name="package_name" class="anchor" href="#package_name"><span class="octicon octicon-link"></span></a>package_name</h4>
+</ul><h3>
+<a name="package_name" class="anchor" href="#package_name"><span class="octicon octicon-link"></span></a>package_name</h3>
 
 <blockquote>
 <p>by default we get it from the package.json</p>
@@ -473,8 +491,8 @@
 </ul><div class="highlight"><pre><span class="nv">package_name : </span><span class="kc">null</span> 
 </pre></div>
 
-<h4>
-<a name="package_desc" class="anchor" href="#package_desc"><span class="octicon octicon-link"></span></a>package_desc</h4>
+<h3>
+<a name="package_desc" class="anchor" href="#package_desc"><span class="octicon octicon-link"></span></a>package_desc</h3>
 
 <blockquote>
 <p>by default we get it from package.json</p>
@@ -497,8 +515,8 @@
 </ul><div class="highlight"><pre><span class="nv">package_desc : </span><span class="kc">null</span> 
 </pre></div>
 
-<h4>
-<a name="informative" class="anchor" href="#informative"><span class="octicon octicon-link"></span></a>informative</h4>
+<h3>
+<a name="informative" class="anchor" href="#informative"><span class="octicon octicon-link"></span></a>informative</h3>
 
 <blockquote>
 <p>tell the people what's going on (verbose)</p>
@@ -522,25 +540,25 @@
 Your readme file "test/readme_no_changelog.md" is ready!
 </code></pre>
 
-<h4>
-<a name="h1" class="anchor" href="#h1"><span class="octicon octicon-link"></span></a>h1</h4>
+<h3>
+<a name="h1" class="anchor" href="#h1"><span class="octicon octicon-link"></span></a>h1</h3>
 
 <blockquote>
 <p>for the auto generated title of the readme</p>
 </blockquote>
 
 <ul>
-<li>If you are generating a documentation from many different markdown files then you would probably want the big titles be <code>### option group</code> and smaller titles be <code>#### option</code> and when you are generating the whole readme from another grunt task then you would want the title of the many option groups to be <code>##Options</code>
+<li>If you are generating a documentation from many different markdown files then you would probably want the big titles be <code>### option group</code> and smaller titles be <code>### option</code> and when you are generating the whole readme from another grunt task then you would want the title of the many option groups to be <code>##Options</code>
 </li>
 <li>By setting this option to <code>###</code> you can make the titles of the markdown files to be <code>### title</code>
 </li>
-<li>Be sure to set <code>h2</code> option to <code>####</code> for that case, so that sub-titles will appear nicely.</li>
+<li>Be sure to set <code>h2</code> option to <code>###</code> for that case, so that sub-titles will appear nicely.</li>
 <li>By default:</li>
 </ul><div class="highlight"><pre><span class="nv">h1 : </span><span class="s">"</span><span class="err">#</span><span class="s">"</span>
 </pre></div>
 
-<h4>
-<a name="h2" class="anchor" href="#h2"><span class="octicon octicon-link"></span></a>h2</h4>
+<h3>
+<a name="h2" class="anchor" href="#h2"><span class="octicon octicon-link"></span></a>h2</h3>
 
 <blockquote>
 <p>for the auto generated title of the section, like usage or legal or installation parts of the readme</p>
@@ -553,8 +571,8 @@ Your readme file "test/readme_no_changelog.md" is ready!
 </ul><div class="highlight"><pre><span class="nv">h2 : </span><span class="s">"</span><span class="err">##</span><span class="s">"</span>
 </pre></div>
 
-<h4>
-<a name="back_to_top_custom" class="anchor" href="#back_to_top_custom"><span class="octicon octicon-link"></span></a>back_to_top_custom</h4>
+<h3>
+<a name="back_to_top_custom" class="anchor" href="#back_to_top_custom"><span class="octicon octicon-link"></span></a>back_to_top_custom</h3>
 
 <blockquote>
 <p>where backtotop leads you, by default it takes you to the title of the readme</p>
@@ -562,7 +580,7 @@ Your readme file "test/readme_no_changelog.md" is ready!
 
 <ul>
 <li>This is used with <code>table_of_contents</code> option</li>
-<li>Normally, it would take you to the title of the readme page. This is to override that.</li>
+<li>Normally, it would take you to the Table of Contents. This is to override that.</li>
 <li>If you want to change that for whatever reason, set it to the exact link you want to provide</li>
 <li>for example <code>back_to_top_custom : "#my-custom-anchor-in-the-readme-page"</code>
 </li>
@@ -573,59 +591,29 @@ Your readme file "test/readme_no_changelog.md" is ready!
 <h2>
 <a name="release-history" class="anchor" href="#release-history"><span class="octicon octicon-link"></span></a>Release History</h2>
 
-<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
+<p><a href="#jump-to-section">[Back To Top]</a></p>
 
 <p>You can find <a href="/changelogs">all the changelogs here</a>.</p>
 
 <h3>
-<a name="latest-changelog-is-for-v020md" class="anchor" href="#latest-changelog-is-for-v020md"><span class="octicon octicon-link"></span></a>Latest changelog is for <a href="/changelogs/v0.2.0.md">v0.2.0.md</a>:</h3>
+<a name="latest-changelog-is-from-v030md" class="anchor" href="#latest-changelog-is-from-v030md"><span class="octicon octicon-link"></span></a>Latest changelog is from v0.3.0.md:</h3>
 
 <h4>
-<a name="v0232-06jun2013" class="anchor" href="#v0232-06jun2013"><span class="octicon octicon-link"></span></a>v0.2.32 06/Jun/2013</h4>
+<a name="v034-23aug2013" class="anchor" href="#v034-23aug2013"><span class="octicon octicon-link"></span></a>v0.3.4 23/Aug/2013</h4>
 
 <ul>
-<li>fixed typos</li>
-<li>grunt support added for travis</li>
-</ul><h4>
-<a name="v023-06jun2013" class="anchor" href="#v023-06jun2013"><span class="octicon octicon-link"></span></a>v0.2.3 06/Jun/2013</h4>
-
-<ul>
-<li>Check null checks and empty strings for option failsafe</li>
-<li>Get the package info once #7</li>
-<li>add these new options
--- travis_branch #3
--- package_title
--- h1 #5
--- h2 #5
--- back_to_top_custom</li>
-<li>Latest changelog is <code>h2 + #</code>. So if h2 is <code>##</code>, then it is <code>###Latest Changelog</code>. Because <code>##</code> would be Release history title and latest changelog is its sub-title.</li>
-</ul><h4>
-<a name="v022-05jun2013" class="anchor" href="#v022-05jun2013"><span class="octicon octicon-link"></span></a>v0.2.2 05/Jun/2013</h4>
-
-<ul>
-<li>Minor typo fixes</li>
-<li>added keywords to package</li>
-<li>released the package</li>
-</ul><h4>
-<a name="v020-05jun2013" class="anchor" href="#v020-05jun2013"><span class="octicon octicon-link"></span></a>v0.2.0 05/Jun/2013</h4>
-
-<ul>
-<li>Wrote the documentation</li>
-<li>Fixed some more issues with prefix check. Now if there isn't a prefix, it sorts the files under changelog alphabetically. z0.1.0.md, and v0.1.0.md are both included in the sorting process.</li>
-<li>changed some default options to more convenient values</li>
-<li>updated docs</li>
-<li>added more tests</li>
-<li>updated keywords and package desc.</li>
+<li>added relative options to test readmes</li>
+<li>fixed doc</li>
 </ul><h2>
 <a name="legal-mambo-jambo" class="anchor" href="#legal-mambo-jambo"><span class="octicon octicon-link"></span></a>Legal Mambo Jambo</h2>
 
-<p><a href="#grunt-readme-generator-">[Back To Top]</a></p>
+<p><a href="#jump-to-section">[Back To Top]</a></p>
 
 <p>Copyright © 2013 aponxi <a href="mailto:aponxi@weaponxi.com">aponxi@weaponxi.com</a></p>
 
 <p>This software is licensed under <a href="http://aponxi.mit-license.org/">MIT License</a>.</p>
 
-<hr><p><em>This readme has been automatically generated by <a href="https://github.com/aponxi/grunt-readme-generator">readme generator</a> on Thu Jun 06 2013 17:51:02 GMT-0400 (EDT).</em></p>
+<hr><p><em>This readme has been automatically generated by <a href="https://github.com/aponxi/grunt-readme-generator">readme generator</a> on Fri Aug 23 2013 20:55:02 GMT-0400 (EDT).</em></p>
         </section>
 
         <aside id="sidebar">
@@ -640,7 +628,7 @@ Your readme file "test/readme_no_changelog.md" is ready!
 
           <p class="repo-owner"><a href="https://github.com/aponxi/grunt-readme-generator"></a> is maintained by <a href="https://github.com/aponxi">aponxi</a>.</p>
 
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
       </div>
     </div>
