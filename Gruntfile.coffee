@@ -35,6 +35,7 @@ module.exports = (grunt) ->
           readme_folder: "test/readme"
           changelog_folder: "test/changelogs"
         order:
+          "default_options.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -58,6 +59,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "testing_anomallies.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -81,6 +83,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "no_package_info.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -104,6 +107,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "no_toc.md" :"Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -127,6 +131,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "all_options.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -152,6 +157,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "different_header.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -175,6 +181,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "no_travis.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -199,6 +206,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "no_footer.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -220,6 +228,7 @@ module.exports = (grunt) ->
           banner: "banner.md"
 
         order:
+          "no_release_history.md": "Options used to generate this readme file"
           "installation.md" : "Installation"
           "usage.md" :"Usage"
           "options.md" :"Options"
@@ -273,7 +282,7 @@ module.exports = (grunt) ->
   # Whenever the "test" task is run, first clean the "tmp" dir, then run this
   # plugin's task(s), then test the result.
   grunt.registerTask "test", [
-    "clean", 
+    "clean"
     "readme_generator:all_options"
     "readme_generator:no_toc"
     "readme_generator:no_travis"
@@ -287,5 +296,9 @@ module.exports = (grunt) ->
 
   grunt.registerTask "build", [
     "readme_generator:this_readme"
+  ]
+  grunt.registerTask "release", [
+    "build"
+    "test"
   ]
   grunt.registerTask "default", ["build"]
